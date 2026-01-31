@@ -3,6 +3,8 @@ import { Issue, ImpactLevel } from '@/types/issue';
 import { Badge } from './ui/badge';
 import { cn } from '@/lib/utils';
 import { AlertCircle, AlertTriangle, Info } from 'lucide-react';
+import { sendMessage } from '@/lib/messaging';
+import { MessageType } from '@/types/messages';
 
 const severityConfig = {
   critical: {
@@ -88,9 +90,18 @@ interface IssueListItemProps {
 }
 
 function IssueListItem({ issue, isSelected, onSelect }: IssueListItemProps) {
+  const handleClick = () => {
+    onSelect();
+    // Send message to highlight this issue on the page
+    sendMessage({
+      type: MessageType.HIGHLIGHT_ISSUE,
+      data: { issueId: issue.id }
+    }).catch(err => console.error('Failed to highlight issue:', err));
+  };
+
   return (
     <button
-      onClick={onSelect}
+      onClick={handleClick}
       className={cn(
         'w-full text-left px-4 py-3 hover:bg-accent transition-colors border-l-2',
         isSelected ? 'bg-accent border-primary' : 'border-transparent'

@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Play, Download, Settings } from 'lucide-react';
+import { Play, Download, Settings, Target, EyeOff } from 'lucide-react';
 import { useScanState, useScanDispatch } from '../context/ScanContext';
 import { sendMessage } from '@/lib/messaging';
 import { MessageType } from '@/types/messages';
@@ -9,11 +10,28 @@ import { downloadJSON } from '@/lib/export';
 export default function Header() {
   const { currentScan, isScanning } = useScanState();
   const dispatch = useScanDispatch();
+  const [pickerActive, setPickerActive] = useState(false);
 
   const handleExport = () => {
     if (currentScan) {
       downloadJSON(currentScan);
     }
+  };
+
+  const handleTogglePicker = async () => {
+    const newState = !pickerActive;
+    setPickerActive(newState);
+
+    await sendMessage({
+      type: MessageType.TOGGLE_PICKER,
+      data: { enabled: newState }
+    }).catch(err => console.error('Failed to toggle picker:', err));
+  };
+
+  const handleClearHighlights = async () => {
+    await sendMessage({
+      type: MessageType.CLEAR_HIGHLIGHTS
+    }).catch(err => console.error('Failed to clear highlights:', err));
   };
 
   const handleScan = async () => {
@@ -67,12 +85,33 @@ export default function Header() {
           </Button>
 
           {currentScan && (
-            <Button variant="outline" size="sm" onClick={handleExport}>
-              <Download className="h-4 w-4" />
-            </Button>
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleTogglePicker}
+                className={pickerActive ? 'bg-primary text-primary-foreground' : ''}
+                title="Pick element on page"
+              >
+                <Target className="h-4 w-4" />
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleClearHighlights}
+                title="Clear highlights"
+              >
+                <EyeOff className="h-4 w-4" />
+              </Button>
+
+              <Button variant="outline" size="sm" onClick={handleExport} title="Export as JSON">
+                <Download className="h-4 w-4" />
+              </Button>
+            </>
           )}
 
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" title="Settings">
             <Settings className="h-4 w-4" />
           </Button>
         </div>
