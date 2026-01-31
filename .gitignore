@@ -1,0 +1,77 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+dist/
+dist-ssr/
+build/
+*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.production
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Extension builds and packages
+*.crx
+*.pem
+*.zip
+web-ext-artifacts/
+
+# Testing
+coverage/
+.nyc_output/
+*.lcov
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+.temp/
+
+# Lock files (keep pnpm-lock.yaml, ignore others)
+package-lock.json
+yarn.lock
+
+# Debug
+.vite-inspect/
+
+# Optional: Uncomment if you want to ignore compiled TypeScript
+# *.js
+# *.js.map
+# !vite.config.ts
+# !tailwind.config.js
+# !postcss.config.js
