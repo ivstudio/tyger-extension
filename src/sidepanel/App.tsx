@@ -4,6 +4,7 @@ import { MessageType } from '@/types/messages';
 import { ScanResult } from '@/types/issue';
 import { ScanProvider, useScanDispatch } from './context/ScanContext';
 import Header from './components/Header';
+import FilterBar from './components/FilterBar';
 import IssueList from './components/IssueList';
 import IssueDetail from './components/IssueDetail';
 
@@ -30,6 +31,7 @@ function AppContent() {
   return (
     <div className="flex flex-col h-screen bg-background">
       <Header />
+      <FilterBar />
       <div className="flex-1 flex overflow-hidden">
         <div className="w-2/5 border-r border-border overflow-y-auto">
           <IssueList />

@@ -2,9 +2,10 @@
 
 Current status of the Accessibility Audit Chrome Extension implementation.
 
-## ✅ Completed (Phase 1-3)
+## ✅ Completed (Phase 1-4)
 
 ### Project Foundation
+
 - [x] Package.json with all dependencies
 - [x] TypeScript configuration (tsconfig.json)
 - [x] Vite build setup with @crxjs/vite-plugin
@@ -16,6 +17,7 @@ Current status of the Accessibility Audit Chrome Extension implementation.
 - [x] VS Code settings
 
 ### Core Type Definitions
+
 - [x] Issue type with complete interface
 - [x] ScanResult and ScanDiff types
 - [x] Checklist types with default templates
@@ -23,6 +25,7 @@ Current status of the Accessibility Audit Chrome Extension implementation.
 - [x] Recommendation types
 
 ### Data Layer & Utilities
+
 - [x] Storage abstraction (chrome.storage.local)
 - [x] Auto-pruning (keep last 10 scans per URL)
 - [x] Storage usage monitoring
@@ -31,6 +34,7 @@ Current status of the Accessibility Audit Chrome Extension implementation.
 - [x] Message routing helpers
 
 ### Scanner Engine
+
 - [x] axe-core integration wrapper
 - [x] Result transformation to Issue format
 - [x] WCAG level detection
@@ -40,12 +44,14 @@ Current status of the Accessibility Audit Chrome Extension implementation.
 - [x] Code example generation for common fixes
 
 ### Extension Core
+
 - [x] Background service worker with message routing
 - [x] Content script with scan execution
 - [x] Scan request handling
 - [x] Error handling and reporting
 
 ### Side Panel UI
+
 - [x] React 18 setup with TypeScript
 - [x] Context-based state management
 - [x] Tailwind CSS styling with shadcn/ui components
@@ -57,6 +63,7 @@ Current status of the Accessibility Audit Chrome Extension implementation.
 - [x] Filtering context (ready for filter UI)
 
 ### Export Functionality
+
 - [x] JSON export implementation
 - [x] Download as file
 - [x] Copy to clipboard
@@ -64,31 +71,41 @@ Current status of the Accessibility Audit Chrome Extension implementation.
 - [x] Export dialog component
 - [x] Metadata inclusion (version, timestamp, browser info)
 
+### Element Highlighting & Inspection (Phase 4)
+
+- [x] DOM overlay system for highlighting violations
+- [x] Color-coded highlights by severity (critical=red, serious=orange, moderate=amber, minor=blue)
+- [x] Tooltip on hover showing issue summary, WCAG info, rule ID
+- [x] Element picker mode with crosshair cursor
+- [x] Sync between side panel selection and page highlights
+- [x] Z-index management for overlays (max z-index for visibility)
+- [x] Auto-scroll to element on selection with pulse animation
+- [x] Click highlight to return to issue in side panel
+- [x] Clear all highlights button
+- [x] Smart tooltip positioning
+
 ### Documentation
+
 - [x] README with project overview
 - [x] GETTING_STARTED guide
 - [x] Project structure documentation
 - [x] Troubleshooting guide
+- [x] Phase 4 implementation summary
 
-## 🚧 In Progress / Next Steps (Phase 4-7)
+## 🚧 In Progress / Next Steps (Phase 5-7)
 
-### Phase 4: Element Highlighting & Inspection
-- [ ] DOM overlay system for highlighting violations
-- [ ] Color-coded highlights by severity
-- [ ] Tooltip on hover showing issue summary
-- [ ] Element picker mode (click to inspect)
-- [ ] Sync between side panel selection and page highlights
-- [ ] Z-index management for overlays
-- [ ] Scroll-to-element on selection
+### Phase 5: Filtering & Search
 
-### Phase 5: Interaction-Based Scanning
-- [ ] Re-scan button with loading state
-- [ ] Diff visualization (new vs resolved issues)
-- [ ] Visual indicators for issue status changes
-- [ ] History navigation (view previous scans)
-- [ ] Clear scan history option
+- [ ] Filter dropdowns for severity levels
+- [ ] Filter by WCAG level (A, AA, AAA)
+- [ ] Filter by issue status (open, fixed, ignored, etc.)
+- [ ] Search box for finding issues by title/rule ID
+- [ ] Filter persistence across sessions
+- [ ] Clear all filters button
+- [ ] Issue count badges showing filtered results
 
 ### Phase 6: Manual Validation Checklists
+
 - [ ] Checklist UI component with accordion
 - [ ] Pass/fail/skip status updates
 - [ ] Notes field per checklist item
@@ -97,19 +114,22 @@ Current status of the Accessibility Audit Chrome Extension implementation.
 - [ ] Completion percentage indicator
 - [ ] Include checklist in export
 
-### Phase 7: Additional Features
-- [ ] Filter UI (severity, WCAG level, status dropdowns)
-- [ ] Search functionality
+### Phase 7: Polish & Additional Features
+
 - [ ] Settings page
   - [ ] Analytics opt-in toggle
   - [ ] Clear all data button
   - [ ] About section with version info
 - [ ] First-run experience / onboarding
 - [ ] Analytics implementation (opt-in)
+- [ ] Re-scan button with diff visualization
+- [ ] History navigation (view previous scans)
+- [ ] Keyboard shortcuts
 
 ## 🔧 Technical Debt / Improvements
 
 ### Code Quality
+
 - [ ] Add ESLint to npm scripts
 - [ ] Add Prettier formatting to pre-commit hook
 - [ ] Remove `any` types from scanner.ts and messaging.ts
@@ -118,12 +138,14 @@ Current status of the Accessibility Audit Chrome Extension implementation.
 - [ ] Improve error messages for users
 
 ### Performance
+
 - [ ] Lazy load recommendation tabs
 - [ ] Virtualize long issue lists (if >100 issues)
 - [ ] Debounce search input
 - [ ] Optimize re-renders in IssueList
 
 ### Testing
+
 - [ ] Unit tests for scanner.ts
 - [ ] Unit tests for storage.ts
 - [ ] Unit tests for messaging.ts
@@ -132,6 +154,7 @@ Current status of the Accessibility Audit Chrome Extension implementation.
 - [ ] Test on real websites (Wikipedia, GitHub, etc.)
 
 ### UI/UX Polish
+
 - [ ] Add keyboard shortcuts (e.g., Ctrl+K for search)
 - [ ] Add focus management for accessibility
 - [ ] Improve mobile/small screen layout
@@ -141,6 +164,7 @@ Current status of the Accessibility Audit Chrome Extension implementation.
 - [ ] Confirmation dialogs for destructive actions
 
 ### Browser Compatibility
+
 - [ ] Test in Chrome (different versions)
 - [ ] Add Firefox support (separate manifest)
 - [ ] Add Edge support (test with Chrome build)
@@ -149,44 +173,50 @@ Current status of the Accessibility Audit Chrome Extension implementation.
 
 1. **Icons**: Currently using SVG placeholders - need proper PNG icons at 16px, 48px, 128px
 2. **Export formats**: Only JSON implemented - HTML and Markdown planned for v1.1
-3. **Highlighting**: Not yet implemented - core scanning works but no visual feedback on page
-4. **Element picker**: Planned but not implemented
-5. **Analytics**: Structure in place but no actual tracking implemented
-6. **Filters**: State management ready but no UI components yet
-7. **Manual checklists**: Templates defined but no UI to complete them
+3. **Analytics**: Structure in place but no actual tracking implemented
+4. **Filters**: State management ready but no UI components yet
+5. **Manual checklists**: Templates defined but no UI to complete them
+6. **Fixed elements**: Highlights might not track perfectly for position:fixed elements
+7. **SPA route changes**: Highlights persist across route changes (may need clearing)
 
 ## 🎯 v1.0 Release Criteria
 
 Must have:
+
 - [x] Core scanning with axe-core
 - [x] Issue list with details
 - [x] Role-based recommendations
 - [x] JSON export
-- [ ] Visual highlights on page
+- [x] Visual highlights on page
+- [x] Element picker for inspection
 - [ ] Manual checklists (at minimum keyboard nav and screen reader)
 - [ ] Filter by severity and WCAG level
-- [ ] Scan diff detection
+- [ ] Search functionality
 
 Nice to have for v1.0:
-- [ ] Element picker
-- [ ] Search functionality
+
 - [ ] Settings page
 - [ ] First-run onboarding
+- [ ] Scan diff detection
+- [ ] Filter persistence
 
 ## 🚀 Post v1.0 Roadmap
 
 ### v1.1
+
 - HTML and Markdown export formats
 - Firefox support
 - Custom rule configuration
 - Improved error handling and user feedback
 
 ### v1.2
+
 - Automated re-scanning on DOM changes (MutationObserver)
 - Issue annotations/comments
 - Team sharing features (export with team notes)
 
 ### v2.0
+
 - AI-powered fix suggestions
 - Integration with issue trackers (Jira, GitHub Issues)
 - Bulk operations (mark multiple as fixed)
@@ -194,25 +224,31 @@ Nice to have for v1.0:
 
 ## 📊 Current Build Status
 
-**Last successful build:** Not yet built
-**Bundle size:** TBD
-**Extension size:** TBD
+**Last successful build:** January 31, 2026
+**Bundle size:** ~606 KB (main chunk), 199 KB (sidepanel)
+**Extension size:** ~890 KB total
 **Dependencies:** 29 production, 8 dev
+**Package manager:** pnpm (npm 11.8.0 has compatibility issues)
 
 To build:
+
 ```bash
-npm install
-npm run dev    # Development build with watch
-npm run build  # Production build
+pnpm install
+pnpm run build  # Production build (dev mode has issues with @crxjs)
 ```
+
+After building, load `dist/` folder in Chrome at `chrome://extensions/`.
 
 ## 🐛 Known Issues
 
-1. None yet - extension not yet tested in browser
+1. **Dev mode**: Vite dev mode doesn't work reliably - always use production build
+2. **Page refresh required**: After reloading extension, must refresh the page to load new content script
+3. **Chunk size warning**: Main bundle is large (~606 KB) but acceptable for v1.0
 
 ## 💡 Notes
 
-- The core scanning infrastructure is complete and should work when loaded in Chrome
-- UI components are built but untested in the extension environment
-- Next priority: Test in browser, fix any loading issues, then add highlighting
-- The plan is solid and the implementation follows best practices for Chrome extensions
+- **Phase 4 Complete**: Highlighting and element picker working in production
+- Extension tested on webaim.org and functioning correctly
+- Using pnpm instead of npm due to aria-query compatibility issue
+- Next priority: Add filtering and search UI (Phase 5)
+- The extension follows Chrome MV3 best practices
