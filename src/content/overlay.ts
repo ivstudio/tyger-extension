@@ -28,8 +28,8 @@ export function highlightIssue(issue: Issue): void {
             return;
         }
 
-        // Remove existing highlight if any
-        removeHighlight(issue.id);
+        // Clear all existing highlights so only one element is highlighted at a time
+        clearAllHighlights();
 
         // Create overlay element
         const overlay = createOverlayElement(element as HTMLElement, issue);
