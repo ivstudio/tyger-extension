@@ -2,7 +2,11 @@ import { useEffect, useRef } from 'react';
 import { onMessage, sendMessage } from '@/services/messaging';
 import { MessageType } from '@/types/messages';
 import { ScanResult } from '@/types/issue';
-import { useScanState, useScanDispatch, useViewMode } from './context/ScanContext';
+import {
+    useScanState,
+    useScanDispatch,
+    useViewMode,
+} from './context/ScanContext';
 import { Header } from './components/Header';
 import { FilterBar } from './components/FilterBar';
 import { IssueList, IssueListSkeleton } from './components/IssueList';
@@ -134,7 +138,11 @@ export default function AppContent() {
         }
 
         // Scan complete with zero issues (only in issues view)
-        if (viewMode === 'issues' && currentScan && currentScan.issues.length === 0) {
+        if (
+            viewMode === 'issues' &&
+            currentScan &&
+            currentScan.issues.length === 0
+        ) {
             return <ZeroResultsState />;
         }
 

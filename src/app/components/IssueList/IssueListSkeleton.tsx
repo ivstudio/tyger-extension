@@ -1,6 +1,6 @@
 export function IssueListSkeleton() {
     return (
-        <div className="divide-y divide-border animate-pulse">
+        <div className="animate-pulse divide-y divide-border">
             {/* Skeleton severity group */}
             <div>
                 <div className="flex items-center gap-2 px-4 py-2">
@@ -9,7 +9,10 @@ export function IssueListSkeleton() {
                 </div>
                 {/* Skeleton issue items */}
                 {[1, 2, 3].map(i => (
-                    <div key={i} className="border-l-2 border-transparent px-4 py-3">
+                    <div
+                        key={i}
+                        className="border-l-2 border-transparent px-4 py-3"
+                    >
                         <div className="mb-2 h-4 w-3/4 rounded bg-muted" />
                         <div className="flex items-center gap-2">
                             <div className="h-5 w-16 rounded-full bg-muted" />
@@ -25,7 +28,10 @@ export function IssueListSkeleton() {
                     <div className="h-4 w-20 rounded bg-muted" />
                 </div>
                 {[1, 2].map(i => (
-                    <div key={i} className="border-l-2 border-transparent px-4 py-3">
+                    <div
+                        key={i}
+                        className="border-l-2 border-transparent px-4 py-3"
+                    >
                         <div className="mb-2 h-4 w-2/3 rounded bg-muted" />
                         <div className="flex items-center gap-2">
                             <div className="h-5 w-16 rounded-full bg-muted" />

@@ -10,7 +10,7 @@ export default function EmptyState({ onScan, isScanning }: EmptyStateProps) {
     return (
         <div className="flex h-full w-full justify-center px-8 pt-24">
             <div className="max-w-lg text-left">
-                <h2 className="mb-4 text-2xl font-semibold leading-tight">
+                <h2 className="mb-4 text-2xl leading-tight font-semibold">
                     Run an accessibility scan on the current page
                 </h2>
                 <p className="mb-2 text-base leading-relaxed text-muted-foreground">
@@ -32,7 +32,7 @@ export default function EmptyState({ onScan, isScanning }: EmptyStateProps) {
                 </Button>
 
                 <div>
-                    <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                    <h3 className="mb-3 text-sm font-semibold tracking-wide text-muted-foreground uppercase">
                         What this scan checks
                     </h3>
                     <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted-foreground">
