@@ -182,7 +182,7 @@ Once the extension is working:
    - Your own local development sites
 
 2. **Review the code:**
-   - `src/lib/scanner.ts` - Core scanning logic
+   - `src/services/scanner.ts` - Core scanning logic
    - `src/sidepanel/App.tsx` - Main UI
    - `src/types/issue.ts` - Data models
 

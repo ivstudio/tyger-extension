@@ -52,10 +52,10 @@ dist/
 ├── manifest.json
 ├── service-worker-loader.js
 ├── src/
-│   ├── content/
+│   ├── contentScripts/
 │   │   ├── index.ts-loader.js
 │   │   └── index.ts.js
-│   ├── lib/
+│   ├── services/
 │   │   ├── messaging.ts.js
 │   │   └── scanner.ts.js
 │   ├── sidepanel/

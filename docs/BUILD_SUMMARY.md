@@ -35,11 +35,11 @@ Extension built successfully with all required files:
 ```
 dist/
 ├── manifest.json          ✅ Chrome Extension Manifest V3
-├── service-worker-loader.js   ✅ Background worker
+├── service-worker-loader.js   ✅ Worker
 ├── src/
-│   ├── content/          ✅ Content script (scanning)
-│   ├── sidepanel/        ✅ React UI
-│   └── lib/              ✅ Core utilities
+│   ├── contentScripts/   ✅ Content scripts (scanning)
+│   ├── app/              ✅ React UI
+│   └── services/              ✅ Core utilities
 ├── icons/                ✅ Extension icons
 └── vendor/               ✅ React/Vite runtime
 ```
@@ -223,10 +223,10 @@ pnpm run type-check  # TypeScript checking
 
 ### Code Changes Made
 Fixed TypeScript errors in these files:
-- `src/lib/scanner.ts` - Selector type handling
-- `src/lib/messaging.ts` - Chrome API type assertion
-- `src/lib/storage.ts` - getBytesInUse type assertion
-- `src/content/index.ts` - Unused parameter
+- `src/services/scanner.ts` - Selector type handling
+- `src/services/messaging.ts` - Chrome API type assertion
+- `src/services/storage.ts` - getBytesInUse type assertion
+- `src/contentScripts/index.ts` - Unused parameter
 - `src/sidepanel/**/*.tsx` - React import cleanup
 - `src/types/messages.ts` - Unused import removal
 

@@ -7,7 +7,7 @@
 
 ## What Was Implemented
 
-### 1. ✅ DOM Overlay System (`src/content/overlay.ts`)
+### 1. ✅ DOM Overlay System (`src/contentScripts/overlay.ts`)
 
 **Features:**
 - **Color-coded highlights** by severity:
@@ -28,7 +28,7 @@
 - `highlightAllIssues(issues)` - Highlight all at once
 - `removeHighlight(issueId)` - Remove specific highlight
 
-### 2. ✅ Tooltip System (`src/content/overlay.ts`)
+### 2. ✅ Tooltip System (`src/contentScripts/overlay.ts`)
 
 **Features:**
 - **Hover tooltips** on highlighted elements
@@ -41,7 +41,7 @@
 - **Styled card design** with border matching severity
 - **Auto-hide** on mouse leave
 
-### 3. ✅ Element Picker (`src/content/picker.ts`)
+### 3. ✅ Element Picker (`src/contentScripts/picker.ts`)
 
 **Features:**
 - **Crosshair cursor** when active
@@ -88,7 +88,7 @@
 
 ### 5. ✅ Content Script Updates
 
-**Enhanced `src/content/index.ts`:**
+**Enhanced `src/contentScripts/index.ts`:**
 - **Message handling** for highlight and picker commands
 - **Window message listener** for overlay/picker events
 - **Scan result storage** for highlighting
@@ -181,11 +181,11 @@ Overlay Click              │
 ## Files Changed
 
 ### New Files (2)
-- ✅ `src/content/overlay.ts` (280 lines)
-- ✅ `src/content/picker.ts` (260 lines)
+- ✅ `src/contentScripts/overlay.ts` (280 lines)
+- ✅ `src/contentScripts/picker.ts` (260 lines)
 
 ### Modified Files (3)
-- ✅ `src/content/index.ts` - Added highlight/picker integration
+- ✅ `src/contentScripts/index.ts` - Added highlight/picker integration
 - ✅ `src/sidepanel/components/Header.tsx` - Added picker and clear buttons
 - ✅ `src/sidepanel/components/IssueList.tsx` - Auto-highlight on click
 

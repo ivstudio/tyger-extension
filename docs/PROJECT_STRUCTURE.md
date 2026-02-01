@@ -17,20 +17,20 @@ accessibility-extension/
 │
 ├── 📁 src/                         # Source code
 │   │
-│   ├── 📁 background/              # Service Worker (persistent background script)
+│   ├── 📁 worker/              # Service Worker (persistent background script)
 │   │   └── index.ts                # Message routing, extension lifecycle
 │   │
-│   ├── 📁 content/                 # Content Scripts (runs on web pages)
+│   ├── 📁 contentScripts/                 # Content Scriptss (runs on web pages)
 │   │   └── index.ts                # Scan execution, page interaction
 │   │
-│   ├── 📁 lib/                     # Shared utilities and core logic
+│   ├── 📁 services/                     # Shared utilities and core logic
 │   │   ├── scanner.ts              # axe-core integration, result transformation
 │   │   ├── storage.ts              # Chrome storage abstraction, auto-pruning
 │   │   ├── messaging.ts            # Type-safe message passing with Zod
 │   │   ├── export.ts               # JSON export, download, clipboard
 │   │   └── utils.ts                # Utility functions (cn, etc.)
 │   │
-│   ├── 📁 sidepanel/               # React UI (side panel interface)
+│   ├── 📁 app/               # React UI (side panel interface)
 │   │   │
 │   │   ├── 📁 components/          # React components
 │   │   │   ├── 📁 ui/              # Base UI components (shadcn/ui)
@@ -111,13 +111,13 @@ accessibility-extension/
 - Content script injection rules
 - Side panel default path
 
-#### `src/background/index.ts`
+#### `src/worker/index.ts`
 - Message routing between content script ↔ side panel
 - Extension lifecycle (install, update)
 - Side panel management
 - **Entry point:** Service worker
 
-#### `src/content/index.ts`
+#### `src/contentScripts/index.ts`
 - Scan execution (calls scanner.ts)
 - Listens for scan requests from side panel
 - Sends results back to side panel
@@ -125,7 +125,7 @@ accessibility-extension/
 
 ### Core Libraries (5 files)
 
-#### `src/lib/scanner.ts` (~300 lines)
+#### `src/services/scanner.ts` (~300 lines)
 **Purpose:** Interface with axe-core and transform results
 
 **Key Functions:**
@@ -137,7 +137,7 @@ accessibility-extension/
 
 **Dependencies:** axe-core, dom-accessibility-api
 
-#### `src/lib/storage.ts` (~250 lines)
+#### `src/services/storage.ts` (~250 lines)
 **Purpose:** Manage chrome.storage.local with auto-pruning
 
 **Key Functions:**
@@ -156,7 +156,7 @@ accessibility-extension/
 }
 ```
 
-#### `src/lib/messaging.ts`
+#### `src/services/messaging.ts`
 **Purpose:** Type-safe message passing with validation
 
 **Key Functions:**
@@ -172,7 +172,7 @@ accessibility-extension/
 - TOGGLE_PICKER, INSPECT_ELEMENT
 - UPDATE_ISSUE_STATUS, OPEN_SIDEPANEL
 
-#### `src/lib/export.ts`
+#### `src/services/export.ts`
 **Purpose:** Export scan results
 
 **Key Functions:**
@@ -192,7 +192,7 @@ accessibility-extension/
 }
 ```
 
-#### `src/lib/utils.ts`
+#### `src/services/utils.ts`
 **Purpose:** Utility functions
 
 **Key Functions:**
@@ -225,54 +225,54 @@ accessibility-extension/
 
 ### React UI (Component-Based Organization)
 
-#### `src/sidepanel/main.tsx`
+#### `src/app/main.tsx`
 React entry point - renders `<App />` into DOM
 
-#### `src/sidepanel/App.tsx`
+#### `src/app/App.tsx`
 Main app component:
 - Sets up ScanProvider context
 - Listens for scan results
 - Layout: Header + FilterBar + (IssueList | IssueDetail)
 
-#### `src/sidepanel/context/ScanContext.tsx`
+#### `src/app/context/ScanContext.tsx`
 State management with useReducer:
 - **State:** currentScan, previousScan, selectedIssue, filters, isScanning, error
 - **Actions:** SCAN_START, SCAN_COMPLETE, SELECT_ISSUE, UPDATE_FILTERS, etc.
 - **Hooks:** useScanState(), useScanDispatch(), useFilteredIssues()
 
-#### `src/sidepanel/components/Header/`
+#### `src/app/components/Header/`
 Top bar component directory:
 - **Header.tsx** - Main header component with title, current URL, scan button, export button, settings button, and summary badges (Critical, Serious, Moderate, Minor counts)
 - **index.ts** - Component export
 
-#### `src/sidepanel/components/IssueList/`
+#### `src/app/components/IssueList/`
 Issue list component directory:
 - **IssueList.tsx** - Main list component showing issues grouped by severity with icons and counts
 - **IssueListItem.tsx** - Individual issue item component with WCAG level badges, CSS selectors, and selected state highlighting
 - **index.ts** - Component exports
 
-#### `src/sidepanel/components/IssueDetail/`
+#### `src/app/components/IssueDetail/`
 Issue detail component directory:
 - **IssueDetail.tsx** - Main detail view showing full issue description, WCAG metadata (level, criteria, impact, confidence), element info (selector, HTML snippet), context (role, accessible name, focusable, contrast), recommendations in tabs (Developer, QA, Designer), status buttons (Fixed, Ignored, Needs Design), notes textarea, and "Learn More" link
 - **RecommendationCard.tsx** - Reusable card component for displaying role-specific recommendations
 - **index.ts** - Component exports
 
-#### `src/sidepanel/components/FilterBar/`
+#### `src/app/components/FilterBar/`
 Filter controls component directory:
 - **FilterBar.tsx** - Search input and filter dropdowns (severity, WCAG level, status)
 - **index.ts** - Component export
 
-#### `src/sidepanel/components/EmptyState/`
+#### `src/app/components/EmptyState/`
 Empty state component directory:
 - **EmptyState.tsx** - Shown when no scan results (icon, message, "Run Your First Scan" CTA, error state if scan failed)
 - **index.ts** - Component export
 
-#### `src/sidepanel/components/ExportDialog/`
+#### `src/app/components/ExportDialog/`
 Export functionality component directory:
 - **ExportDialog.tsx** - Export UI with download JSON button, copy to clipboard button, file size estimate, and export contents summary
 - **index.ts** - Component export
 
-#### `src/sidepanel/components/ui/`
+#### `src/app/components/ui/`
 Base UI components from shadcn/ui:
 - `button.tsx` - Button with variants (default, outline, ghost, destructive)
 - `badge.tsx` - Badge with variants (default, secondary, outline)
@@ -311,7 +311,7 @@ Uses Radix UI primitives with Tailwind styling.
          │
          ▼
 ┌─────────────────┐
-│ Content Script  │ ─────► Runs axe.run() via scanner.ts
+│ Content Scripts  │ ─────► Runs axe.run() via scanner.ts
 │ (Injected Page) │
 └─────────────────┘
          │
@@ -322,7 +322,7 @@ Uses Radix UI primitives with Tailwind styling.
          │
          ▼
 ┌─────────────────┐
-│ Content Script  │ ─────► SCAN_COMPLETE message
+│ Content Scripts  │ ─────► SCAN_COMPLETE message
 └─────────────────┘
          │
          ▼
@@ -385,9 +385,9 @@ Vite Bundler
          ▼
 dist/ (Chrome Extension)
 ├── manifest.json
-├── background.js
+├── worker.js
 ├── content.js
-├── sidepanel/
+├── app/
 │   ├── index.html
 │   └── assets/
 │       ├── index-[hash].js
@@ -401,9 +401,9 @@ All imports use `@/` alias for `src/`:
 
 ```typescript
 import { Issue } from '@/types/issue';
-import { sendMessage } from '@/lib/messaging';
-import { useScanState } from '@/sidepanel/context/ScanContext';
-import { cn } from '@/lib/utils';
+import { sendMessage } from '@/services/messaging';
+import { useScanState } from '@/app/context/ScanContext';
+import { cn } from '@/services/utils';
 ```
 
 Configured in:
@@ -442,10 +442,10 @@ const dispatch = useScanDispatch();
 ```
 
 ### 3. Separation of Concerns
-- **Scanning logic:** lib/scanner.ts (pure functions)
-- **Storage logic:** lib/storage.ts (async functions)
-- **UI logic:** sidepanel/components/ (React components)
-- **Message routing:** background/index.ts (orchestration)
+- **Scanning logic:** services/scanner.ts (pure functions)
+- **Storage logic:** services/storage.ts (async functions)
+- **UI logic:** app/components/ (React components)
+- **Message routing:** worker/index.ts (orchestration)
 
 ### 4. Component Composition
 ```typescript
@@ -478,9 +478,9 @@ ComponentName/
 
 ## Entry Points
 
-1. **Background:** `src/background/index.ts` → Service worker
-2. **Content:** `src/content/index.ts` → Injected into pages
-3. **Side Panel:** `src/sidepanel/index.html` → React app entry
+1. **Background:** `src/worker/index.ts` → Service worker
+2. **Content:** `src/contentScripts/index.ts` → Injected into pages
+3. **App:** `src/app/index.html` → React app entry
 
 All three run in separate JavaScript contexts and communicate via messages.
 

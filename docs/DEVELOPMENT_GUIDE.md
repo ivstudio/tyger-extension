@@ -45,7 +45,7 @@ npm run dev
 
 Edit any file in `src/`:
 - Changes to React components → HMR (instant update)
-- Changes to content/background scripts → Manual refresh needed
+- Changes to contentScripts/worker → Manual refresh needed
 
 ### 4. Test Changes
 
@@ -155,7 +155,7 @@ export const MessageType = {
 
 3. Use it:
 ```typescript
-import { sendMessage } from '@/lib/messaging';
+import { sendMessage } from '@/services/messaging';
 import { MessageType } from '@/types/messages';
 
 await sendMessage({
@@ -188,9 +188,9 @@ const myData: MyNewType = {
 
 ### Adding a New Utility Function
 
-1. Add to `src/lib/utils.ts` or create new file:
+1. Add to `src/services/utils.ts` or create new file:
 ```typescript
-// src/lib/myUtils.ts
+// src/services/myUtils.ts
 export function myUtilityFunction(input: string): string {
   return input.toUpperCase();
 }
@@ -198,7 +198,7 @@ export function myUtilityFunction(input: string): string {
 
 2. Import and use:
 ```typescript
-import { myUtilityFunction } from '@/lib/myUtils';
+import { myUtilityFunction } from '@/services/myUtils';
 
 const result = myUtilityFunction('hello');
 ```
@@ -228,7 +228,7 @@ touch src/sidepanel/components/ui/dialog.tsx
 
 Custom rules beyond axe-core:
 
-1. Add to `src/lib/scanner.ts`:
+1. Add to `src/services/scanner.ts`:
 ```typescript
 async function runCustomRules(document: Document): Promise<Issue[]> {
   const issues: Issue[] = [];
@@ -272,7 +272,7 @@ export interface MyData {
 }
 ```
 
-2. Add storage functions in `src/lib/storage.ts`:
+2. Add storage functions in `src/services/storage.ts`:
 ```typescript
 const STORAGE_KEYS = {
   // ... existing
@@ -293,7 +293,7 @@ export async function getMyData(): Promise<MyData | null> {
 
 3. Use it:
 ```typescript
-import { saveMyData, getMyData } from '@/lib/storage';
+import { saveMyData, getMyData } from '@/services/storage';
 
 await saveMyData({ id: '1', value: 'test' });
 const data = await getMyData();
@@ -371,7 +371,7 @@ ls -la dist/
 
 ### Measuring Scan Performance
 
-Add timing logs in `src/lib/scanner.ts`:
+Add timing logs in `src/services/scanner.ts`:
 
 ```typescript
 export async function runScan(): Promise<ScanResult> {

@@ -30,7 +30,7 @@ A complete, functional Chrome extension for accessibility auditing has been impl
 ### Extension Core (3)
 - `public/manifest.json` - Chrome Extension Manifest V3
 - `src/background/index.ts` - Service worker (message routing)
-- `src/content/index.ts` - Content script (scanning execution)
+- `src/contentScripts/index.ts` - Content script (scanning execution)
 
 ### Type Definitions (3)
 - `src/types/issue.ts` - Issue, ScanResult, ScanDiff types
@@ -38,11 +38,11 @@ A complete, functional Chrome extension for accessibility auditing has been impl
 - `src/types/messages.ts` - Message types with Zod schemas
 
 ### Core Libraries (5)
-- `src/lib/scanner.ts` - axe-core integration (300+ lines)
-- `src/lib/storage.ts` - Chrome storage abstraction (250+ lines)
-- `src/lib/messaging.ts` - Type-safe messaging layer
-- `src/lib/export.ts` - JSON export functionality
-- `src/lib/utils.ts` - Utility functions (cn helper)
+- `src/services/scanner.ts` - axe-core integration (300+ lines)
+- `src/services/storage.ts` - Chrome storage abstraction (250+ lines)
+- `src/services/messaging.ts` - Type-safe messaging layer
+- `src/services/export.ts` - JSON export functionality
+- `src/services/utils.ts` - Utility functions (cn helper)
 
 ### UI Components (9)
 - `src/sidepanel/main.tsx` - React entry point
@@ -331,7 +331,7 @@ The implementation is considered successful if:
 
 ### Strengths
 - **Type safety:** Strict TypeScript, comprehensive types
-- **Architecture:** Clean separation (background/content/UI)
+- **Architecture:** Clean separation (worker/contentScripts/app)
 - **State management:** React Context with reducer pattern
 - **Error handling:** Try-catch blocks in critical paths
 - **Code organization:** Clear file structure, single responsibility

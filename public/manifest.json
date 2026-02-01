@@ -13,19 +13,19 @@
     "<all_urls>"
   ],
   "background": {
-    "service_worker": "src/background/index.ts",
+    "service_worker": "src/worker/index.ts",
     "type": "module"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["src/content/index.ts"],
+      "js": ["src/contentScripts/index.ts"],
       "run_at": "document_idle",
       "all_frames": false
     }
   ],
   "side_panel": {
-    "default_path": "src/sidepanel/index.html"
+    "default_path": "src/app/index.html"
   },
   "action": {
     "default_title": "Accessibility Audit"

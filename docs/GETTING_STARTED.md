@@ -227,7 +227,7 @@ Once you have the extension running:
 1. Review the [README.md](./README.md) for project structure
 2. Check [accessibility-extension.md](./accessibility-extension.md) for requirements
 3. Explore the codebase:
-   - `src/lib/scanner.ts` - Core scanning logic
+   - `src/services/scanner.ts` - Core scanning logic
    - `src/sidepanel/components/` - UI components
    - `src/types/` - TypeScript type definitions
 

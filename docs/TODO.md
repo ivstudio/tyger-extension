@@ -33,7 +33,7 @@
 ## Phase 4: Element Highlighting (High Priority)
 
 ### Overlay System
-- [ ] Create `src/content/overlay.ts`
+- [ ] Create `src/contentScripts/overlay.ts`
 - [ ] Implement `createHighlight(issue: Issue)` function
 - [ ] Add color coding by severity:
   - Critical: red border
@@ -52,7 +52,7 @@
 - [ ] Add pulse animation on first highlight
 
 ### Tooltip System
-- [ ] Create `src/content/tooltip.ts`
+- [ ] Create `src/contentScripts/tooltip.ts`
 - [ ] Show issue title + severity on hover
 - [ ] Position tooltip near element (avoid overflow)
 - [ ] Add click to open side panel detail
@@ -68,7 +68,7 @@
 ## Phase 4.5: Element Picker (Medium Priority)
 
 ### Picker Mode
-- [ ] Create `src/content/picker.ts`
+- [ ] Create `src/contentScripts/picker.ts`
 - [ ] Implement hover effect showing selector path
 - [ ] Add click handler to select element
 - [ ] Send INSPECT_ELEMENT message to side panel

@@ -51,14 +51,14 @@ accessibility-extension/
 ├── src/
 │   ├── background/         # Service worker
 │   │   └── index.ts
-│   ├── content/            # Content script (runs on web pages)
+│   ├── contentScripts/            # Content script (runs on web pages)
 │   │   └── index.ts
 │   ├── sidepanel/          # React UI
 │   │   ├── components/
 │   │   ├── context/
 │   │   ├── App.tsx
 │   │   └── main.tsx
-│   ├── lib/                # Shared utilities
+│   ├── services/                # Shared utilities
 │   │   ├── scanner.ts      # axe-core integration
 │   │   ├── storage.ts      # Chrome storage API
 │   │   └── messaging.ts    # Type-safe messaging
