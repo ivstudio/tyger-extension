@@ -10,8 +10,8 @@ export default function EmptyState({ onScan, isScanning }: EmptyStateProps) {
     return (
         <div className="flex h-full w-full justify-center px-8 pt-24">
             <div className="max-w-xl text-left">
-                <h2 className="mb-4 text-2xl leading-tight font-bold">
-                    Run an accessibility scan on the current page
+                <h2 className="mb-4 text-[28px] leading-tight font-bold">
+                    Check for common accessibility issues
                 </h2>
                 <p className="mb-6 text-base leading-relaxed text-muted-foreground">
                     This scan analyzes the currently visible page for common
