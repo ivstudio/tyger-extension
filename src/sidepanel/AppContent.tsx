@@ -3,10 +3,10 @@ import { onMessage } from '@/lib/messaging';
 import { MessageType } from '@/types/messages';
 import { ScanResult } from '@/types/issue';
 import { useScanDispatch } from './context/ScanContext';
-import Header from './components/Header';
-import FilterBar from './components/FilterBar';
-import IssueList from './components/IssueList';
-import IssueDetail from './components/IssueDetail';
+import { Header } from './components/Header';
+import { FilterBar } from './components/FilterBar';
+import { IssueList } from './components/IssueList';
+import { IssueDetail } from './components/IssueDetail';
 
 export default function AppContent() {
     const dispatch = useScanDispatch();

@@ -84,17 +84,19 @@ chrome://extensions/ → Extension → "Inspect views: service worker"
 
 ### Adding a New UI Component
 
-1. Create component file:
+1. Create component directory and files:
 ```bash
-touch src/sidepanel/components/MyComponent.tsx
+mkdir src/sidepanel/components/MyComponent
+touch src/sidepanel/components/MyComponent/MyComponent.tsx
+touch src/sidepanel/components/MyComponent/index.ts
 ```
 
 2. Write component:
 ```typescript
-import React from 'react';
-import { Button } from './ui/button';
+// MyComponent/MyComponent.tsx
+import { Button } from '../ui/button';
 
-export default function MyComponent() {
+export function MyComponent() {
   return (
     <div className="p-4">
       <Button>Click me</Button>
@@ -103,13 +105,25 @@ export default function MyComponent() {
 }
 ```
 
-3. Import and use:
+3. Export from index.ts:
 ```typescript
-import MyComponent from './components/MyComponent';
+// MyComponent/index.ts
+export { MyComponent } from './MyComponent';
+```
+
+4. Import and use:
+```typescript
+import { MyComponent } from './components/MyComponent';
 
 // In your JSX:
 <MyComponent />
 ```
+
+**Component Organization:**
+- Directory name matches component name (PascalCase)
+- One component per file for maintainability
+- Related helper components in the same directory
+- index.ts provides clean import path
 
 ### Adding a New Message Type
 

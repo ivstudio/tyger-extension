@@ -38,11 +38,31 @@ accessibility-extension/
 │   │   │   │   ├── badge.tsx       # Badge variants
 │   │   │   │   └── tabs.tsx        # Tab components
 │   │   │   │
-│   │   │   ├── Header.tsx          # Top bar (scan button, summary)
-│   │   │   ├── IssueList.tsx       # Issue list with severity grouping
-│   │   │   ├── IssueDetail.tsx     # Issue details and recommendations
-│   │   │   ├── EmptyState.tsx      # No results state
-│   │   │   └── ExportDialog.tsx    # Export functionality
+│   │   │   ├── 📁 Header/          # Top bar component
+│   │   │   │   ├── Header.tsx      # Scan button, summary
+│   │   │   │   └── index.ts        # Component export
+│   │   │   │
+│   │   │   ├── 📁 IssueList/       # Issue list components
+│   │   │   │   ├── IssueList.tsx   # Main list with severity grouping
+│   │   │   │   ├── IssueListItem.tsx # Individual issue item
+│   │   │   │   └── index.ts        # Component exports
+│   │   │   │
+│   │   │   ├── 📁 IssueDetail/     # Issue detail components
+│   │   │   │   ├── IssueDetail.tsx # Main detail view
+│   │   │   │   ├── RecommendationCard.tsx # Recommendation display
+│   │   │   │   └── index.ts        # Component exports
+│   │   │   │
+│   │   │   ├── 📁 FilterBar/       # Filter controls
+│   │   │   │   ├── FilterBar.tsx   # Search and filter UI
+│   │   │   │   └── index.ts        # Component export
+│   │   │   │
+│   │   │   ├── 📁 EmptyState/      # No results state
+│   │   │   │   ├── EmptyState.tsx  # Empty/error display
+│   │   │   │   └── index.ts        # Component export
+│   │   │   │
+│   │   │   └── 📁 ExportDialog/    # Export functionality
+│   │   │       ├── ExportDialog.tsx # Export UI
+│   │   │       └── index.ts        # Component export
 │   │   │
 │   │   ├── 📁 context/             # React Context (state management)
 │   │   │   └── ScanContext.tsx     # Scan state, filters, selected issue
@@ -203,7 +223,7 @@ accessibility-extension/
 - Zod schemas for runtime validation
 - TypeScript types derived from schemas
 
-### React UI (10 files)
+### React UI (Component-Based Organization)
 
 #### `src/sidepanel/main.tsx`
 React entry point - renders `<App />` into DOM
@@ -212,7 +232,7 @@ React entry point - renders `<App />` into DOM
 Main app component:
 - Sets up ScanProvider context
 - Listens for scan results
-- Layout: Header + (IssueList | IssueDetail)
+- Layout: Header + FilterBar + (IssueList | IssueDetail)
 
 #### `src/sidepanel/context/ScanContext.tsx`
 State management with useReducer:
@@ -220,53 +240,54 @@ State management with useReducer:
 - **Actions:** SCAN_START, SCAN_COMPLETE, SELECT_ISSUE, UPDATE_FILTERS, etc.
 - **Hooks:** useScanState(), useScanDispatch(), useFilteredIssues()
 
-#### `src/sidepanel/components/Header.tsx`
-Top bar with:
-- Title and current URL
-- "Run Scan" button
-- Export button
-- Settings button
-- Summary badges (Critical, Serious, Moderate, Minor counts)
+#### `src/sidepanel/components/Header/`
+Top bar component directory:
+- **Header.tsx** - Main header component with title, current URL, scan button, export button, settings button, and summary badges (Critical, Serious, Moderate, Minor counts)
+- **index.ts** - Component export
 
-#### `src/sidepanel/components/IssueList.tsx`
-Left panel showing:
-- Issues grouped by severity
-- Severity icons and counts
-- WCAG level badges
-- CSS selectors
-- Selected state highlighting
+#### `src/sidepanel/components/IssueList/`
+Issue list component directory:
+- **IssueList.tsx** - Main list component showing issues grouped by severity with icons and counts
+- **IssueListItem.tsx** - Individual issue item component with WCAG level badges, CSS selectors, and selected state highlighting
+- **index.ts** - Component exports
 
-#### `src/sidepanel/components/IssueDetail.tsx`
-Right panel showing:
-- Full issue description
-- WCAG metadata (level, criteria, impact, confidence)
-- Element info (selector, HTML snippet)
-- Context (role, accessible name, focusable, contrast)
-- Recommendations in tabs (Developer, QA, Designer)
-- Status buttons (Fixed, Ignored, Needs Design)
-- Notes textarea
-- "Learn More" link to Deque University
+#### `src/sidepanel/components/IssueDetail/`
+Issue detail component directory:
+- **IssueDetail.tsx** - Main detail view showing full issue description, WCAG metadata (level, criteria, impact, confidence), element info (selector, HTML snippet), context (role, accessible name, focusable, contrast), recommendations in tabs (Developer, QA, Designer), status buttons (Fixed, Ignored, Needs Design), notes textarea, and "Learn More" link
+- **RecommendationCard.tsx** - Reusable card component for displaying role-specific recommendations
+- **index.ts** - Component exports
 
-#### `src/sidepanel/components/EmptyState.tsx`
-Shown when no scan results:
-- Icon and message
-- "Run Your First Scan" CTA
-- Error state if scan failed
+#### `src/sidepanel/components/FilterBar/`
+Filter controls component directory:
+- **FilterBar.tsx** - Search input and filter dropdowns (severity, WCAG level, status)
+- **index.ts** - Component export
 
-#### `src/sidepanel/components/ExportDialog.tsx`
-Export functionality:
-- Download JSON button
-- Copy to clipboard button
-- File size estimate
-- Export contents summary
+#### `src/sidepanel/components/EmptyState/`
+Empty state component directory:
+- **EmptyState.tsx** - Shown when no scan results (icon, message, "Run Your First Scan" CTA, error state if scan failed)
+- **index.ts** - Component export
+
+#### `src/sidepanel/components/ExportDialog/`
+Export functionality component directory:
+- **ExportDialog.tsx** - Export UI with download JSON button, copy to clipboard button, file size estimate, and export contents summary
+- **index.ts** - Component export
 
 #### `src/sidepanel/components/ui/`
 Base UI components from shadcn/ui:
 - `button.tsx` - Button with variants (default, outline, ghost, destructive)
 - `badge.tsx` - Badge with variants (default, secondary, outline)
 - `tabs.tsx` - Tabs components (Tabs, TabsList, TabsTrigger, TabsContent)
+- `input.tsx` - Input component
+- `checkbox.tsx` - Checkbox component
+- `popover.tsx` - Popover component
 
 Uses Radix UI primitives with Tailwind styling.
+
+**Component Organization:**
+- Each component has its own directory matching the component name (PascalCase)
+- Multi-component files split into separate files (one component per file)
+- index.ts provides clean imports: `import { Header } from './components/Header'`
+- Related components colocated for easier maintenance and testing
 
 ## Data Flow Diagram
 
@@ -439,11 +460,21 @@ const dispatch = useScanDispatch();
 
 ## File Naming Conventions
 
-- **Components:** PascalCase (e.g., `IssueList.tsx`)
+- **Component Directories:** PascalCase matching component name (e.g., `IssueList/`, `Header/`)
+- **Component Files:** PascalCase (e.g., `IssueList.tsx`, `IssueListItem.tsx`)
+- **Component Exports:** `index.ts` in each component directory
 - **Utilities:** camelCase (e.g., `scanner.ts`)
 - **Types:** camelCase (e.g., `issue.ts`)
 - **UI Primitives:** camelCase (e.g., `button.tsx`)
 - **Config:** kebab-case or standard (e.g., `tsconfig.json`)
+
+**Component Organization Pattern:**
+```
+ComponentName/
+├── ComponentName.tsx     # Main component
+├── HelperComponent.tsx   # Related helper components
+└── index.ts              # Export: export { ComponentName } from './ComponentName'
+```
 
 ## Entry Points
 
