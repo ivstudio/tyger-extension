@@ -32,31 +32,31 @@ export async function sendMessageToTab<T extends Message>(
 }
 
 /**
- * Set up message listener with type validation
+ * Set up message listener with type validation.
+ * Returns an unsubscribe function so callers can remove the listener (e.g. in useEffect cleanup).
  */
 export function onMessage<T extends Message>(
     handler: (
         message: T,
         sender: browser.Runtime.MessageSender
     ) => Promise<any> | any
-): void {
-    browser.runtime.onMessage.addListener(
-        (message: unknown, sender: browser.Runtime.MessageSender) => {
-            try {
-                const validatedMessage = MessageSchema.parse(message) as T;
-                const result = handler(validatedMessage, sender);
-
-                // Return promise for async handlers
-                if (result instanceof Promise) {
-                    return result;
-                }
-                return Promise.resolve(result);
-            } catch (error) {
-                console.error('Message validation failed:', error);
-                return Promise.resolve(null);
-            }
+): () => void {
+    const listener = (
+        message: unknown,
+        sender: browser.Runtime.MessageSender
+    ): Promise<any> => {
+        try {
+            const validatedMessage = MessageSchema.parse(message) as T;
+            const result = handler(validatedMessage, sender);
+            if (result instanceof Promise) return result;
+            return Promise.resolve(result);
+        } catch (error) {
+            console.error('Message validation failed:', error);
+            return Promise.resolve(null);
         }
-    );
+    };
+    browser.runtime.onMessage.addListener(listener);
+    return () => browser.runtime.onMessage.removeListener(listener);
 }
 
 /**
