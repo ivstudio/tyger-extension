@@ -1,95 +1,99 @@
 import { z } from 'zod';
 
-// Message type definitions
 export const MessageType = {
-  SCAN_REQUEST: 'SCAN_REQUEST',
-  SCAN_COMPLETE: 'SCAN_COMPLETE',
-  SCAN_ERROR: 'SCAN_ERROR',
-  HIGHLIGHT_ISSUE: 'HIGHLIGHT_ISSUE',
-  CLEAR_HIGHLIGHTS: 'CLEAR_HIGHLIGHTS',
-  TOGGLE_PICKER: 'TOGGLE_PICKER',
-  INSPECT_ELEMENT: 'INSPECT_ELEMENT',
-  UPDATE_ISSUE_STATUS: 'UPDATE_ISSUE_STATUS',
-  OPEN_SIDEPANEL: 'OPEN_SIDEPANEL'
+    SCAN_REQUEST: 'SCAN_REQUEST',
+    SCAN_COMPLETE: 'SCAN_COMPLETE',
+    SCAN_ERROR: 'SCAN_ERROR',
+    HIGHLIGHT_ISSUE: 'HIGHLIGHT_ISSUE',
+    CLEAR_HIGHLIGHTS: 'CLEAR_HIGHLIGHTS',
+    TOGGLE_PICKER: 'TOGGLE_PICKER',
+    INSPECT_ELEMENT: 'INSPECT_ELEMENT',
+    UPDATE_ISSUE_STATUS: 'UPDATE_ISSUE_STATUS',
+    OPEN_SIDEPANEL: 'OPEN_SIDEPANEL',
 } as const;
 
 export type MessageTypeKeys = keyof typeof MessageType;
 
-// Zod schemas for runtime validation
 export const ScanRequestSchema = z.object({
-  type: z.literal(MessageType.SCAN_REQUEST),
-  data: z.object({
-    url: z.string(),
-    runId: z.string().optional()
-  })
+    type: z.literal(MessageType.SCAN_REQUEST),
+    data: z.object({
+        url: z.string(),
+        runId: z.string().optional(),
+    }),
 });
 
 export const ScanCompleteSchema = z.object({
-  type: z.literal(MessageType.SCAN_COMPLETE),
-  data: z.object({
-    result: z.any(), // ScanResult - using any to avoid circular type issues
-    runId: z.string().optional()
-  })
+    type: z.literal(MessageType.SCAN_COMPLETE),
+    data: z.object({
+        result: z.any(), // ScanResult - using any to avoid circular type issues
+        runId: z.string().optional(),
+    }),
 });
 
 export const ScanErrorSchema = z.object({
-  type: z.literal(MessageType.SCAN_ERROR),
-  data: z.object({
-    error: z.string(),
-    runId: z.string().optional()
-  })
+    type: z.literal(MessageType.SCAN_ERROR),
+    data: z.object({
+        error: z.string(),
+        runId: z.string().optional(),
+    }),
 });
 
 export const HighlightIssueSchema = z.object({
-  type: z.literal(MessageType.HIGHLIGHT_ISSUE),
-  data: z.object({
-    issueId: z.string()
-  })
+    type: z.literal(MessageType.HIGHLIGHT_ISSUE),
+    data: z.object({
+        issueId: z.string(),
+    }),
 });
 
 export const ClearHighlightsSchema = z.object({
-  type: z.literal(MessageType.CLEAR_HIGHLIGHTS)
+    type: z.literal(MessageType.CLEAR_HIGHLIGHTS),
 });
 
 export const TogglePickerSchema = z.object({
-  type: z.literal(MessageType.TOGGLE_PICKER),
-  data: z.object({
-    enabled: z.boolean()
-  })
+    type: z.literal(MessageType.TOGGLE_PICKER),
+    data: z.object({
+        enabled: z.boolean(),
+    }),
 });
 
 export const InspectElementSchema = z.object({
-  type: z.literal(MessageType.INSPECT_ELEMENT),
-  data: z.object({
-    selector: z.string(),
-    elementInfo: z.record(z.string(), z.any())
-  })
+    type: z.literal(MessageType.INSPECT_ELEMENT),
+    data: z.object({
+        selector: z.string(),
+        elementInfo: z.record(z.string(), z.any()),
+    }),
 });
 
 export const UpdateIssueStatusSchema = z.object({
-  type: z.literal(MessageType.UPDATE_ISSUE_STATUS),
-  data: z.object({
-    issueId: z.string(),
-    status: z.enum(['open', 'fixed', 'ignored', 'needs-design', 'false-positive']),
-    notes: z.string().optional()
-  })
+    type: z.literal(MessageType.UPDATE_ISSUE_STATUS),
+    data: z.object({
+        issueId: z.string(),
+        status: z.enum([
+            'open',
+            'fixed',
+            'ignored',
+            'needs-design',
+            'false-positive',
+        ]),
+        notes: z.string().optional(),
+    }),
 });
 
 export const OpenSidePanelSchema = z.object({
-  type: z.literal(MessageType.OPEN_SIDEPANEL)
+    type: z.literal(MessageType.OPEN_SIDEPANEL),
 });
 
 // Union type for all messages
 export const MessageSchema = z.discriminatedUnion('type', [
-  ScanRequestSchema,
-  ScanCompleteSchema,
-  ScanErrorSchema,
-  HighlightIssueSchema,
-  ClearHighlightsSchema,
-  TogglePickerSchema,
-  InspectElementSchema,
-  UpdateIssueStatusSchema,
-  OpenSidePanelSchema
+    ScanRequestSchema,
+    ScanCompleteSchema,
+    ScanErrorSchema,
+    HighlightIssueSchema,
+    ClearHighlightsSchema,
+    TogglePickerSchema,
+    InspectElementSchema,
+    UpdateIssueStatusSchema,
+    OpenSidePanelSchema,
 ]);
 
 export type Message = z.infer<typeof MessageSchema>;

@@ -88,16 +88,17 @@ accessibility-extension/
 2. Click "Run Scan" to analyze the current page
 3. Review issues grouped by severity (Critical, Serious, Moderate, Minor)
 4. Select an issue to view:
-   - Detailed description
-   - Element location and HTML
-   - Role-specific recommendations
-   - WCAG criteria
+    - Detailed description
+    - Element location and HTML
+    - Role-specific recommendations
+    - WCAG criteria
 5. Update issue status (Fixed, Ignored, Needs Design)
 6. Export results as JSON
 
 ## Roadmap
 
 ### v1.0 (Current)
+
 - [x] Core scanning with axe-core
 - [x] Side panel UI with issue list
 - [x] Role-based recommendations
@@ -108,6 +109,7 @@ accessibility-extension/
 - [ ] Scan diff detection
 
 ### v1.1 (Future)
+
 - [ ] HTML/Markdown export formats
 - [ ] Custom rule configuration
 - [ ] Firefox support

@@ -5,10 +5,10 @@ let highlightedElements: Map<string, HTMLElement> = new Map();
 let activeTooltip: HTMLElement | null = null;
 
 const SEVERITY_COLORS = {
-  critical: '#DC2626', // red-600
-  serious: '#EA580C',  // orange-600
-  moderate: '#D97706', // amber-600
-  minor: '#2563EB'     // blue-600
+    critical: '#DC2626', // red-600
+    serious: '#EA580C', // orange-600
+    moderate: '#D97706', // amber-600
+    minor: '#2563EB', // blue-600
 };
 
 const OVERLAY_Z_INDEX = 2147483647; // Maximum z-index
@@ -18,60 +18,69 @@ const TOOLTIP_Z_INDEX = OVERLAY_Z_INDEX + 1;
  * Create highlight overlay for an issue
  */
 export function highlightIssue(issue: Issue): void {
-  try {
-    const element = document.querySelector(issue.node.selector);
-    if (!element) {
-      console.warn('Element not found for selector:', issue.node.selector);
-      return;
+    try {
+        const element = document.querySelector(issue.node.selector);
+        if (!element) {
+            console.warn(
+                'Element not found for selector:',
+                issue.node.selector
+            );
+            return;
+        }
+
+        // Remove existing highlight if any
+        removeHighlight(issue.id);
+
+        // Create overlay element
+        const overlay = createOverlayElement(element as HTMLElement, issue);
+        highlightedElements.set(issue.id, overlay);
+
+        // Add to document
+        document.body.appendChild(overlay);
+
+        // Add event listeners
+        overlay.addEventListener('mouseenter', () =>
+            showTooltip(issue, overlay)
+        );
+        overlay.addEventListener('mouseleave', hideTooltip);
+        overlay.addEventListener('click', e => {
+            e.stopPropagation();
+            // Send message to side panel to select this issue
+            window.postMessage(
+                {
+                    type: 'HIGHLIGHT_CLICKED',
+                    issueId: issue.id,
+                },
+                '*'
+            );
+        });
+
+        // Scroll element into view with smooth scroll
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Add pulse animation
+        overlay.style.animation = 'pulse 1s ease-in-out 2';
+    } catch (error) {
+        console.error('Failed to highlight issue:', error);
     }
-
-    // Remove existing highlight if any
-    removeHighlight(issue.id);
-
-    // Create overlay element
-    const overlay = createOverlayElement(element as HTMLElement, issue);
-    highlightedElements.set(issue.id, overlay);
-
-    // Add to document
-    document.body.appendChild(overlay);
-
-    // Add event listeners
-    overlay.addEventListener('mouseenter', () => showTooltip(issue, overlay));
-    overlay.addEventListener('mouseleave', hideTooltip);
-    overlay.addEventListener('click', (e) => {
-      e.stopPropagation();
-      // Send message to side panel to select this issue
-      window.postMessage({
-        type: 'HIGHLIGHT_CLICKED',
-        issueId: issue.id
-      }, '*');
-    });
-
-    // Scroll element into view with smooth scroll
-    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-    // Add pulse animation
-    overlay.style.animation = 'pulse 1s ease-in-out 2';
-  } catch (error) {
-    console.error('Failed to highlight issue:', error);
-  }
 }
 
 /**
  * Create overlay element positioned over the target element
  */
 function createOverlayElement(element: HTMLElement, issue: Issue): HTMLElement {
-  const overlay = document.createElement('div');
-  overlay.className = 'accessibility-audit-overlay';
-  overlay.dataset.issueId = issue.id;
+    const overlay = document.createElement('div');
+    overlay.className = 'accessibility-audit-overlay';
+    overlay.dataset.issueId = issue.id;
 
-  const rect = element.getBoundingClientRect();
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-  const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    const rect = element.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollLeft =
+        window.pageXOffset || document.documentElement.scrollLeft;
 
-  const color = SEVERITY_COLORS[issue.impact];
+    const color = SEVERITY_COLORS[issue.impact];
 
-  overlay.style.cssText = `
+    overlay.style.cssText = `
     position: absolute;
     top: ${rect.top + scrollTop}px;
     left: ${rect.left + scrollLeft}px;
@@ -87,44 +96,46 @@ function createOverlayElement(element: HTMLElement, issue: Issue): HTMLElement {
     cursor: pointer;
   `;
 
-  // Add pulse animation
-  addPulseAnimation();
+    // Add pulse animation
+    addPulseAnimation();
 
-  // Update position on scroll and resize
-  const updatePosition = () => {
-    const newRect = element.getBoundingClientRect();
-    const newScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const newScrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    // Update position on scroll and resize
+    const updatePosition = () => {
+        const newRect = element.getBoundingClientRect();
+        const newScrollTop =
+            window.pageYOffset || document.documentElement.scrollTop;
+        const newScrollLeft =
+            window.pageXOffset || document.documentElement.scrollLeft;
 
-    overlay.style.top = `${newRect.top + newScrollTop}px`;
-    overlay.style.left = `${newRect.left + newScrollLeft}px`;
-    overlay.style.width = `${newRect.width}px`;
-    overlay.style.height = `${newRect.height}px`;
-  };
+        overlay.style.top = `${newRect.top + newScrollTop}px`;
+        overlay.style.left = `${newRect.left + newScrollLeft}px`;
+        overlay.style.width = `${newRect.width}px`;
+        overlay.style.height = `${newRect.height}px`;
+    };
 
-  window.addEventListener('scroll', updatePosition, { passive: true });
-  window.addEventListener('resize', updatePosition, { passive: true });
+    window.addEventListener('scroll', updatePosition, { passive: true });
+    window.addEventListener('resize', updatePosition, { passive: true });
 
-  // Store cleanup function
-  (overlay as any).__cleanup = () => {
-    window.removeEventListener('scroll', updatePosition);
-    window.removeEventListener('resize', updatePosition);
-  };
+    // Store cleanup function
+    (overlay as any).__cleanup = () => {
+        window.removeEventListener('scroll', updatePosition);
+        window.removeEventListener('resize', updatePosition);
+    };
 
-  return overlay;
+    return overlay;
 }
 
 /**
  * Add pulse animation keyframes to document
  */
 function addPulseAnimation(): void {
-  if (document.getElementById('accessibility-audit-animations')) {
-    return;
-  }
+    if (document.getElementById('accessibility-audit-animations')) {
+        return;
+    }
 
-  const style = document.createElement('style');
-  style.id = 'accessibility-audit-animations';
-  style.textContent = `
+    const style = document.createElement('style');
+    style.id = 'accessibility-audit-animations';
+    style.textContent = `
     @keyframes pulse {
       0%, 100% {
         transform: scale(1);
@@ -136,21 +147,21 @@ function addPulseAnimation(): void {
       }
     }
   `;
-  document.head.appendChild(style);
+    document.head.appendChild(style);
 }
 
 /**
  * Show tooltip for an issue
  */
 function showTooltip(issue: Issue, overlay: HTMLElement): void {
-  hideTooltip();
+    hideTooltip();
 
-  const tooltip = document.createElement('div');
-  tooltip.className = 'accessibility-audit-tooltip';
+    const tooltip = document.createElement('div');
+    tooltip.className = 'accessibility-audit-tooltip';
 
-  const color = SEVERITY_COLORS[issue.impact];
+    const color = SEVERITY_COLORS[issue.impact];
 
-  tooltip.innerHTML = `
+    tooltip.innerHTML = `
     <div style="
       position: absolute;
       background: white;
@@ -200,70 +211,71 @@ function showTooltip(issue: Issue, overlay: HTMLElement): void {
     </div>
   `;
 
-  // Position tooltip above the overlay
-  const rect = overlay.getBoundingClientRect();
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-  const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    // Position tooltip above the overlay
+    const rect = overlay.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollLeft =
+        window.pageXOffset || document.documentElement.scrollLeft;
 
-  const tooltipContent = tooltip.firstElementChild as HTMLElement;
-  tooltipContent.style.top = `${rect.top + scrollTop - 10}px`;
-  tooltipContent.style.left = `${rect.left + scrollLeft}px`;
-  tooltipContent.style.transform = 'translateY(-100%)';
+    const tooltipContent = tooltip.firstElementChild as HTMLElement;
+    tooltipContent.style.top = `${rect.top + scrollTop - 10}px`;
+    tooltipContent.style.left = `${rect.left + scrollLeft}px`;
+    tooltipContent.style.transform = 'translateY(-100%)';
 
-  document.body.appendChild(tooltip);
-  activeTooltip = tooltip;
+    document.body.appendChild(tooltip);
+    activeTooltip = tooltip;
 }
 
 /**
  * Hide active tooltip
  */
 function hideTooltip(): void {
-  if (activeTooltip) {
-    activeTooltip.remove();
-    activeTooltip = null;
-  }
+    if (activeTooltip) {
+        activeTooltip.remove();
+        activeTooltip = null;
+    }
 }
 
 /**
  * Remove highlight for a specific issue
  */
 export function removeHighlight(issueId: string): void {
-  const overlay = highlightedElements.get(issueId);
-  if (overlay) {
-    // Call cleanup function if it exists
-    if ((overlay as any).__cleanup) {
-      (overlay as any).__cleanup();
+    const overlay = highlightedElements.get(issueId);
+    if (overlay) {
+        // Call cleanup function if it exists
+        if ((overlay as any).__cleanup) {
+            (overlay as any).__cleanup();
+        }
+        overlay.remove();
+        highlightedElements.delete(issueId);
     }
-    overlay.remove();
-    highlightedElements.delete(issueId);
-  }
 }
 
 /**
  * Clear all highlights
  */
 export function clearAllHighlights(): void {
-  highlightedElements.forEach((overlay) => {
-    if ((overlay as any).__cleanup) {
-      (overlay as any).__cleanup();
-    }
-    overlay.remove();
-  });
-  highlightedElements.clear();
-  hideTooltip();
+    highlightedElements.forEach(overlay => {
+        if ((overlay as any).__cleanup) {
+            (overlay as any).__cleanup();
+        }
+        overlay.remove();
+    });
+    highlightedElements.clear();
+    hideTooltip();
 }
 
 /**
  * Highlight all issues
  */
 export function highlightAllIssues(issues: Issue[]): void {
-  clearAllHighlights();
-  issues.forEach(issue => highlightIssue(issue));
+    clearAllHighlights();
+    issues.forEach(issue => highlightIssue(issue));
 }
 
 /**
  * Get number of active highlights
  */
 export function getHighlightCount(): number {
-  return highlightedElements.size;
+    return highlightedElements.size;
 }
