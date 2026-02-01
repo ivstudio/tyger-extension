@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button } from '../ui/button';
+import { Button } from '../ui/Button';
 import { Download, Copy, Check } from 'lucide-react';
 import { ScanResult } from '@/types/issue';
 import { ManualChecklist } from '@/types/checklist';

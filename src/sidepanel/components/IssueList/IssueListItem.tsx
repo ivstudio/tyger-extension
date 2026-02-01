@@ -1,5 +1,5 @@
 import { Issue } from '@/types/issue';
-import { Badge } from '../ui/badge';
+import { Badge } from '../ui/Badge';
 import { cn } from '@/lib/utils';
 import { sendMessage } from '@/lib/messaging';
 import { MessageType } from '@/types/messages';

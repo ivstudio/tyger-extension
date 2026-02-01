@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Checkbox } from '../ui/checkbox';
-import { Badge } from '../ui/badge';
+import { Input } from '../ui/Input';
+import { Button } from '../ui/Button';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/Popover';
+import { Checkbox } from '../ui/Checkbox';
+import { Badge } from '../ui/Badge';
 import { Search, Filter, X, ChevronDown } from 'lucide-react';
 import { useScanState, useScanDispatch } from '../../context/ScanContext';
 import { getFilterSummary } from '@/lib/issueFilters';

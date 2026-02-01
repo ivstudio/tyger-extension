@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useScanState, useScanDispatch } from '../../context/ScanContext';
-import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { Button } from '../ui/Button';
+import { Badge } from '../ui/Badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/Tabs';
 import { Code, ExternalLink, CheckCircle, XCircle } from 'lucide-react';
 import { IssueStatus } from '@/types/issue';
 import { updateIssueStatus } from '@/lib/storage';
