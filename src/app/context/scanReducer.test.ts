@@ -193,6 +193,7 @@ describe('scanReducer', () => {
                 },
                 isScanning: true,
                 error: 'Some error',
+                hasScannedOnce: true,
                 currentChecklist: createMockManualChecklist(),
                 viewMode: 'checklist',
             };
