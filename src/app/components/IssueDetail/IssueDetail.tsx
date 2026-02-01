@@ -1,17 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useScanState, useScanDispatch } from '../../context/ScanContext';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
+import { Switch } from '../ui/Switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/Tabs';
-import { Code, ExternalLink, CheckCircle, XCircle } from 'lucide-react';
+import { Code, ExternalLink, CheckCircle, XCircle, Eye } from 'lucide-react';
 import { IssueStatus } from '@/types/issue';
 import { updateIssueStatus } from '@/services/storage';
+import { sendMessage } from '@/services/messaging';
+import { MessageType } from '@/types/messages';
 import { RecommendationCard } from './RecommendationCard';
 
 export function IssueDetail() {
     const { selectedIssue, currentScan } = useScanState();
     const dispatch = useScanDispatch();
     const [notes, setNotes] = useState('');
+    const [highlightsVisible, setHighlightsVisible] = useState(true);
+
+    // Re-highlight when issue changes (if toggle is ON)
+    useEffect(() => {
+        if (selectedIssue && highlightsVisible) {
+            sendMessage({
+                type: MessageType.HIGHLIGHT_ISSUE,
+                data: { issueId: selectedIssue.id },
+            }).catch(err => console.error('Failed to highlight issue:', err));
+        }
+    }, [selectedIssue?.id, highlightsVisible]);
+
+    const handleToggleHighlights = (visible: boolean) => {
+        setHighlightsVisible(visible);
+        if (visible && selectedIssue) {
+            sendMessage({
+                type: MessageType.HIGHLIGHT_ISSUE,
+                data: { issueId: selectedIssue.id },
+            }).catch(err => console.error('Failed to highlight issue:', err));
+        } else {
+            sendMessage({ type: MessageType.CLEAR_HIGHLIGHTS }).catch(err =>
+                console.error('Failed to clear highlights:', err)
+            );
+        }
+    };
 
     if (!selectedIssue) {
         return (
@@ -93,6 +121,22 @@ export function IssueDetail() {
                         ))}
                     </div>
                 </div>
+            </div>
+
+            {/* Highlight Toggle */}
+            <div className="flex items-center gap-2">
+                <label
+                    htmlFor="highlight-toggle"
+                    className="flex items-center gap-2 text-sm font-medium"
+                >
+                    <Eye className="h-4 w-4" />
+                    Show highlights
+                </label>
+                <Switch
+                    id="highlight-toggle"
+                    checked={highlightsVisible}
+                    onCheckedChange={handleToggleHighlights}
+                />
             </div>
 
             {/* Element Info */}
