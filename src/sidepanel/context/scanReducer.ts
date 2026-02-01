@@ -46,6 +46,9 @@ export function scanReducer(state: ScanState, action: ScanAction): ScanState {
                 filters: initialState.filters,
             };
 
+        case 'RESET':
+            return initialState;
+
         case 'UPDATE_ISSUE_STATUS':
             if (!state.currentScan) return state;
 

@@ -4,6 +4,30 @@ import { onMessage, sendMessageToTab, openSidePanel } from '@/lib/messaging';
 
 console.log('Background service worker initialized');
 
+// Listen for sidepanel connection to detect when it closes
+chrome.runtime.onConnect.addListener(port => {
+    if (port.name === 'sidepanel') {
+        console.log('Sidepanel connected');
+
+        port.onDisconnect.addListener(async () => {
+            console.log('Sidepanel disconnected, clearing highlights');
+            try {
+                const tabs = await browser.tabs.query({
+                    active: true,
+                    currentWindow: true,
+                });
+                if (tabs[0]?.id) {
+                    await sendMessageToTab(tabs[0].id, {
+                        type: MessageType.CLEAR_HIGHLIGHTS,
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to clear highlights on disconnect:', error);
+            }
+        });
+    }
+});
+
 // Handle extension icon click - open side panel programmatically
 browser.action.onClicked.addListener(async tab => {
     console.log('Extension icon clicked');

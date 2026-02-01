@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { onMessage } from '@/lib/messaging';
 import { MessageType } from '@/types/messages';
 import { ScanResult } from '@/types/issue';
@@ -10,6 +10,7 @@ import { IssueDetail } from './components/IssueDetail';
 
 export default function AppContent() {
     const dispatch = useScanDispatch();
+    const currentTabUrl = useRef<string | null>(null);
 
     useEffect(() => {
         const unsubscribe = onMessage(message => {
@@ -26,6 +27,46 @@ export default function AppContent() {
             }
         });
         return unsubscribe;
+    }, [dispatch]);
+
+    // Establish connection to background script for cleanup on close
+    useEffect(() => {
+        // When sidepanel closes, the connection disconnects and background
+        // script will detect it and clear highlights on the page
+        const port = chrome.runtime.connect({ name: 'sidepanel' });
+
+        return () => port.disconnect();
+    }, []);
+
+    // Reset state when user navigates to a different page
+    useEffect(() => {
+        const handleTabUpdate = (
+            _tabId: number,
+            changeInfo: { url?: string },
+            tab: chrome.tabs.Tab
+        ) => {
+            // Only respond to URL changes on the active tab in the current window
+            if (changeInfo.url && tab.active) {
+                // If we had a previous URL and it changed, reset the state
+                if (
+                    currentTabUrl.current !== null &&
+                    currentTabUrl.current !== changeInfo.url
+                ) {
+                    dispatch({ type: 'RESET' });
+                }
+                currentTabUrl.current = changeInfo.url;
+            }
+        };
+
+        // Get initial tab URL
+        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+            if (tabs[0]?.url) {
+                currentTabUrl.current = tabs[0].url;
+            }
+        });
+
+        chrome.tabs.onUpdated.addListener(handleTabUpdate);
+        return () => chrome.tabs.onUpdated.removeListener(handleTabUpdate);
     }, [dispatch]);
 
     return (
