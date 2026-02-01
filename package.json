@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "description": "Chrome extension for comprehensive accessibility auditing with axe-core",
   "type": "module",
+  "pnpm": {
+    "overrides": {
+      "@types/react": "^19.2.10",
+      "@types/react-dom": "^19.2.3"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
