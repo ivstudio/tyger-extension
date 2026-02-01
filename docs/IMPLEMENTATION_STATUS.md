@@ -92,27 +92,34 @@ Current status of the Accessibility Audit Chrome Extension implementation.
 - [x] Troubleshooting guide
 - [x] Phase 4 implementation summary
 
-## 🚧 In Progress / Next Steps (Phase 5-7)
+### Filtering & Search (Phase 5)
 
-### Phase 5: Filtering & Search
+- [x] Filter dropdowns for severity levels
+- [x] Filter by WCAG level (A, AA, AAA)
+- [x] Filter by issue status (open, fixed, ignored, etc.)
+- [x] Search box for finding issues by title/rule ID
+- [x] Clear all filters button
+- [x] Issue count badges showing filtered results
+- [x] FilterBar component with multi-select dropdowns
+- [x] Real-time search and filtering
+- [ ] Filter persistence across sessions (planned for v1.1)
 
-- [ ] Filter dropdowns for severity levels
-- [ ] Filter by WCAG level (A, AA, AAA)
-- [ ] Filter by issue status (open, fixed, ignored, etc.)
-- [ ] Search box for finding issues by title/rule ID
-- [ ] Filter persistence across sessions
-- [ ] Clear all filters button
-- [ ] Issue count badges showing filtered results
+### Manual Validation Checklists (Phase 6)
 
-### Phase 6: Manual Validation Checklists
+- [x] Checklist UI component with accordion
+- [x] Pass/fail/skip status updates
+- [x] Notes field per checklist item
+- [x] Save checklist results to storage
+- [x] Load previous checklist for URL
+- [x] Completion percentage indicator
+- [x] Include checklist in export
+- [x] View mode tabs (Issues/Checklist)
+- [x] Auto-save on status changes
+- [x] Reset checklist functionality
+- [x] Progress tracking per category
+- [x] Overall completion badge
 
-- [ ] Checklist UI component with accordion
-- [ ] Pass/fail/skip status updates
-- [ ] Notes field per checklist item
-- [ ] Save checklist results to storage
-- [ ] Load previous checklist for URL
-- [ ] Completion percentage indicator
-- [ ] Include checklist in export
+## 🚧 Next Steps (Phase 7)
 
 ### Phase 7: Polish & Additional Features
 
@@ -189,9 +196,9 @@ Must have:
 - [x] JSON export
 - [x] Visual highlights on page
 - [x] Element picker for inspection
-- [ ] Manual checklists (at minimum keyboard nav and screen reader)
-- [ ] Filter by severity and WCAG level
-- [ ] Search functionality
+- [x] Manual checklists (at minimum keyboard nav and screen reader)
+- [x] Filter by severity and WCAG level
+- [x] Search functionality
 
 Nice to have for v1.0:
 
@@ -248,7 +255,10 @@ After building, load `dist/` folder in Chrome at `chrome://extensions/`.
 ## 💡 Notes
 
 - **Phase 4 Complete**: Highlighting and element picker working in production
+- **Phase 5 Complete**: Filtering and search fully functional
+- **Phase 6 Complete**: Manual validation checklists implemented
 - Extension tested on webaim.org and functioning correctly
 - Using pnpm instead of npm due to aria-query compatibility issue
-- Next priority: Add filtering and search UI (Phase 5)
+- Next priority: Polish and additional features (Phase 7)
 - The extension follows Chrome MV3 best practices
+- All v1.0 must-have features are now complete!

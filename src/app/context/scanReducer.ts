@@ -78,6 +78,60 @@ export function scanReducer(state: ScanState, action: ScanAction): ScanState {
                         : state.selectedIssue,
             };
 
+        case 'SET_VIEW_MODE':
+            return {
+                ...state,
+                viewMode: action.payload,
+            };
+
+        case 'LOAD_CHECKLIST':
+            return {
+                ...state,
+                currentChecklist: action.payload,
+            };
+
+        case 'UPDATE_CHECKLIST_ITEM':
+            if (!state.currentChecklist) return state;
+
+            const updatedCategories = state.currentChecklist.categories.map(
+                category =>
+                    category.id === action.payload.categoryId
+                        ? {
+                              ...category,
+                              items: category.items.map(item =>
+                                  item.id === action.payload.itemId
+                                      ? {
+                                            ...item,
+                                            status: action.payload.status,
+                                            notes: action.payload.notes,
+                                        }
+                                      : item
+                              ),
+                          }
+                        : category
+            );
+
+            // Check if all items are completed (not pending)
+            const allCompleted = updatedCategories.every(category =>
+                category.items.every(item => item.status !== 'pending')
+            );
+
+            return {
+                ...state,
+                currentChecklist: {
+                    ...state.currentChecklist,
+                    categories: updatedCategories,
+                    completed: allCompleted,
+                    timestamp: Date.now(),
+                },
+            };
+
+        case 'RESET_CHECKLIST':
+            return {
+                ...state,
+                currentChecklist: null,
+            };
+
         default:
             return state;
     }

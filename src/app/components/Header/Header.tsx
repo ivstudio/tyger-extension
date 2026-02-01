@@ -1,20 +1,23 @@
 import { useState } from 'react';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
-import { Play, Download, Settings, Target, EyeOff } from 'lucide-react';
-import { useScanState, useScanDispatch } from '../../context/ScanContext';
+import { Tabs, TabsList, TabsTrigger } from '../ui/Tabs';
+import { Play, Download, Settings, Target, EyeOff, AlertCircle, ClipboardList } from 'lucide-react';
+import { useScanState, useScanDispatch, useViewMode, useChecklist } from '../../context/ScanContext';
 import { sendMessage } from '@/services/messaging';
 import { MessageType } from '@/types/messages';
 import { downloadJSON } from '@/services/export';
 
 export default function Header() {
     const { currentScan, isScanning } = useScanState();
+    const viewMode = useViewMode();
+    const checklist = useChecklist();
     const dispatch = useScanDispatch();
     const [pickerActive, setPickerActive] = useState(false);
 
     const handleExport = () => {
         if (currentScan) {
-            downloadJSON(currentScan);
+            downloadJSON(currentScan, checklist || undefined);
         }
     };
 
@@ -137,20 +140,47 @@ export default function Header() {
             </div>
 
             {currentScan && (
-                <div className="mt-3 flex gap-2">
-                    <Badge variant="outline" className="severity-critical">
-                        Critical: {currentScan.summary.bySeverity.critical}
-                    </Badge>
-                    <Badge variant="outline" className="severity-serious">
-                        Serious: {currentScan.summary.bySeverity.serious}
-                    </Badge>
-                    <Badge variant="outline" className="severity-moderate">
-                        Moderate: {currentScan.summary.bySeverity.moderate}
-                    </Badge>
-                    <Badge variant="outline" className="severity-minor">
-                        Minor: {currentScan.summary.bySeverity.minor}
-                    </Badge>
-                </div>
+                <>
+                    <div className="mt-3">
+                        <Tabs
+                            value={viewMode}
+                            onValueChange={value =>
+                                dispatch({
+                                    type: 'SET_VIEW_MODE',
+                                    payload: value as 'issues' | 'checklist',
+                                })
+                            }
+                        >
+                            <TabsList>
+                                <TabsTrigger value="issues" className="gap-2">
+                                    <AlertCircle className="h-4 w-4" />
+                                    Issues
+                                </TabsTrigger>
+                                <TabsTrigger value="checklist" className="gap-2">
+                                    <ClipboardList className="h-4 w-4" />
+                                    Checklist
+                                </TabsTrigger>
+                            </TabsList>
+                        </Tabs>
+                    </div>
+
+                    {viewMode === 'issues' && (
+                        <div className="mt-3 flex gap-2">
+                            <Badge variant="outline" className="severity-critical">
+                                Critical: {currentScan.summary.bySeverity.critical}
+                            </Badge>
+                            <Badge variant="outline" className="severity-serious">
+                                Serious: {currentScan.summary.bySeverity.serious}
+                            </Badge>
+                            <Badge variant="outline" className="severity-moderate">
+                                Moderate: {currentScan.summary.bySeverity.moderate}
+                            </Badge>
+                            <Badge variant="outline" className="severity-minor">
+                                Minor: {currentScan.summary.bySeverity.minor}
+                            </Badge>
+                        </div>
+                    )}
+                </>
             )}
         </header>
     );

@@ -2,14 +2,16 @@ import { useEffect, useRef } from 'react';
 import { onMessage } from '@/services/messaging';
 import { MessageType } from '@/types/messages';
 import { ScanResult } from '@/types/issue';
-import { useScanDispatch } from './context/ScanContext';
+import { useScanDispatch, useViewMode } from './context/ScanContext';
 import { Header } from './components/Header';
 import { FilterBar } from './components/FilterBar';
 import { IssueList } from './components/IssueList';
 import { IssueDetail } from './components/IssueDetail';
+import { ChecklistView } from './components/ChecklistView';
 
 export default function AppContent() {
     const dispatch = useScanDispatch();
+    const viewMode = useViewMode();
     const currentTabUrl = useRef<string | null>(null);
 
     useEffect(() => {
@@ -72,14 +74,22 @@ export default function AppContent() {
     return (
         <div className="flex h-screen flex-col bg-background">
             <Header />
-            <FilterBar />
+            {viewMode === 'issues' && <FilterBar />}
             <div className="flex flex-1 overflow-hidden">
-                <div className="w-2/5 overflow-y-auto border-r border-border">
-                    <IssueList />
-                </div>
-                <div className="flex-1 overflow-y-auto">
-                    <IssueDetail />
-                </div>
+                {viewMode === 'issues' ? (
+                    <>
+                        <div className="w-2/5 overflow-y-auto border-r border-border">
+                            <IssueList />
+                        </div>
+                        <div className="flex-1 overflow-y-auto">
+                            <IssueDetail />
+                        </div>
+                    </>
+                ) : (
+                    <div className="flex-1 overflow-y-auto">
+                        <ChecklistView />
+                    </div>
+                )}
             </div>
         </div>
     );

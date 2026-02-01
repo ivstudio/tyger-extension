@@ -5,6 +5,12 @@ import {
     WCAGLevel,
     IssueStatus,
 } from '@/types/issue';
+import {
+    ManualChecklist,
+    ChecklistItemStatus,
+} from '@/types/checklist';
+
+export type ViewMode = 'issues' | 'checklist';
 
 export interface Filters {
     severity: ImpactLevel[];
@@ -20,6 +26,8 @@ export interface ScanState {
     filters: Filters;
     isScanning: boolean;
     error: string | null;
+    currentChecklist: ManualChecklist | null;
+    viewMode: ViewMode;
 }
 
 export type ScanAction =
@@ -33,7 +41,19 @@ export type ScanAction =
     | {
           type: 'UPDATE_ISSUE_STATUS';
           payload: { issueId: string; status: IssueStatus; notes?: string };
-      };
+      }
+    | { type: 'SET_VIEW_MODE'; payload: ViewMode }
+    | { type: 'LOAD_CHECKLIST'; payload: ManualChecklist }
+    | {
+          type: 'UPDATE_CHECKLIST_ITEM';
+          payload: {
+              categoryId: string;
+              itemId: string;
+              status: ChecklistItemStatus;
+              notes?: string;
+          };
+      }
+    | { type: 'RESET_CHECKLIST' };
 
 export const initialState: ScanState = {
     currentScan: null,
@@ -47,4 +67,6 @@ export const initialState: ScanState = {
     },
     isScanning: false,
     error: null,
+    currentChecklist: null,
+    viewMode: 'issues',
 };
