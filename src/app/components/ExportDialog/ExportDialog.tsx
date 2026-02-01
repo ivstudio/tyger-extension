@@ -3,7 +3,11 @@ import { Button } from '../ui/Button';
 import { Download, Copy, Check } from 'lucide-react';
 import { ScanResult } from '@/types/issue';
 import { ManualChecklist } from '@/types/checklist';
-import { downloadJSON, copyToClipboard, getEstimatedSize } from '@/services/export';
+import {
+    downloadJSON,
+    copyToClipboard,
+    getEstimatedSize,
+} from '@/services/export';
 
 interface ExportDialogProps {
     scan: ScanResult;

@@ -11,5 +11,5 @@
   "printWidth": 80,
   "proseWrap": "preserve",
   "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindStylesheet": "./src/sidepanel/index.css"
+  "tailwindStylesheet": "./src/app/index.css"
 }

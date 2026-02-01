@@ -5,7 +5,9 @@ interface RecommendationCardProps {
     recommendation: Recommendation;
 }
 
-export function RecommendationCard({ recommendation }: RecommendationCardProps) {
+export function RecommendationCard({
+    recommendation,
+}: RecommendationCardProps) {
     return (
         <div className="rounded-md border border-border p-3">
             <div className="mb-2 flex items-center justify-between">

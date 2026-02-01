@@ -1,6 +1,10 @@
 import browser from 'webextension-polyfill';
 import { Message, MessageType } from '@/types/messages';
-import { onMessage, sendMessageToTab, openSidePanel } from '@/services/messaging';
+import {
+    onMessage,
+    sendMessageToTab,
+    openSidePanel,
+} from '@/services/messaging';
 
 console.log('Worker initialized');
 
@@ -22,7 +26,10 @@ chrome.runtime.onConnect.addListener(port => {
                     });
                 }
             } catch (error) {
-                console.error('Failed to clear highlights on disconnect:', error);
+                console.error(
+                    'Failed to clear highlights on disconnect:',
+                    error
+                );
             }
         });
     }
