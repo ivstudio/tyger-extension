@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "description": "Chrome extension for comprehensive accessibility auditing with axe-core",
   "type": "module",
-  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -37,11 +36,12 @@
     "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
     "@types/webextension-polyfill": "^0.10.7",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^5.1.2",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.32",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.3.3",
-    "vite": "^5.0.8"
-  }
+    "vite": "^7.3.1"
+  },
+  "license": "MIT"
 }
