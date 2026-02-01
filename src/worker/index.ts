@@ -93,7 +93,7 @@ onMessage(async (message: Message, sender) => {
 
         case MessageType.HIGHLIGHT_ISSUE:
         case MessageType.CLEAR_HIGHLIGHTS:
-        case MessageType.TOGGLE_PICKER:
+        case MessageType.TOGGLE_PICKER: {
             // Forward to active tab's content scripts
             const activeTabs = await browser.tabs.query({
                 active: true,
@@ -103,6 +103,7 @@ onMessage(async (message: Message, sender) => {
                 await sendMessageToTab(activeTabs[0].id, message);
             }
             break;
+        }
 
         case MessageType.INSPECT_ELEMENT:
             // Forward from content scripts to app

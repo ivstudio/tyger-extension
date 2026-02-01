@@ -1,4 +1,7 @@
-import { ChecklistCategory as ChecklistCategoryType, ChecklistItemStatus } from '@/types/checklist';
+import {
+    ChecklistCategory as ChecklistCategoryType,
+    ChecklistItemStatus,
+} from '@/types/checklist';
 import {
     AccordionItem,
     AccordionTrigger,
@@ -17,21 +20,32 @@ interface ChecklistCategoryProps {
     ) => void;
 }
 
-export function ChecklistCategory({ category, onItemStatusChange }: ChecklistCategoryProps) {
+export function ChecklistCategory({
+    category,
+    onItemStatusChange,
+}: ChecklistCategoryProps) {
     const totalItems = category.items.length;
-    const completedItems = category.items.filter(item => item.status !== 'pending').length;
-    const passedItems = category.items.filter(item => item.status === 'pass').length;
-    const failedItems = category.items.filter(item => item.status === 'fail').length;
+    const completedItems = category.items.filter(
+        item => item.status !== 'pending'
+    ).length;
+    const passedItems = category.items.filter(
+        item => item.status === 'pass'
+    ).length;
+    const failedItems = category.items.filter(
+        item => item.status === 'fail'
+    ).length;
 
-    const completionPercentage = Math.round((completedItems / totalItems) * 100);
+    const completionPercentage = Math.round(
+        (completedItems / totalItems) * 100
+    );
 
     return (
         <AccordionItem value={category.id}>
             <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center justify-between flex-1 pr-2">
+                <div className="flex flex-1 items-center justify-between pr-2">
                     <div className="flex flex-col items-start">
                         <span className="font-medium">{category.title}</span>
-                        <span className="text-xs text-muted-foreground font-normal">
+                        <span className="text-xs font-normal text-muted-foreground">
                             {category.description}
                         </span>
                     </div>
@@ -42,7 +56,10 @@ export function ChecklistCategory({ category, onItemStatusChange }: ChecklistCat
                             </Badge>
                         )}
                         {passedItems > 0 && (
-                            <Badge variant="default" className="text-xs bg-green-600">
+                            <Badge
+                                variant="default"
+                                className="bg-green-600 text-xs"
+                            >
                                 {passedItems} passed
                             </Badge>
                         )}
@@ -56,14 +73,16 @@ export function ChecklistCategory({ category, onItemStatusChange }: ChecklistCat
                 <div className="space-y-0 px-2">
                     {completedItems > 0 && (
                         <div className="mb-4">
-                            <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                            <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
                                 <span>Progress</span>
                                 <span>{completionPercentage}%</span>
                             </div>
-                            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div className="h-2 overflow-hidden rounded-full bg-gray-200">
                                 <div
                                     className="h-full bg-blue-600 transition-all duration-300"
-                                    style={{ width: `${completionPercentage}%` }}
+                                    style={{
+                                        width: `${completionPercentage}%`,
+                                    }}
                                 />
                             </div>
                         </div>
@@ -73,7 +92,12 @@ export function ChecklistCategory({ category, onItemStatusChange }: ChecklistCat
                             key={item.id}
                             item={item}
                             onStatusChange={(itemId, status, notes) =>
-                                onItemStatusChange(category.id, itemId, status, notes)
+                                onItemStatusChange(
+                                    category.id,
+                                    itemId,
+                                    status,
+                                    notes
+                                )
                             }
                         />
                     ))}

@@ -1,5 +1,10 @@
 # Accessibility Audit Chrome Extension
 
+[![CI](https://github.com/YOUR_USERNAME/accessibility-extension/workflows/CI/badge.svg)](https://github.com/YOUR_USERNAME/accessibility-extension/actions)
+[![codecov](https://codecov.io/gh/YOUR_USERNAME/accessibility-extension/branch/main/graph/badge.svg)](https://codecov.io/gh/YOUR_USERNAME/accessibility-extension)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A comprehensive accessibility auditing tool powered by axe-core for Chrome. This extension helps developers, QA engineers, and designers identify and fix accessibility issues on web pages.
 
 **📚 [Complete Documentation →](./docs/)**
@@ -115,6 +120,79 @@ accessibility-extension/
 - [ ] Firefox support
 - [ ] Automated re-scanning on DOM changes
 - [ ] Analytics opt-in
+
+## Development
+
+### Testing
+
+This project uses **Vitest** with comprehensive test coverage for services, reducers, and components.
+
+```bash
+# Run all tests
+pnpm test:run
+
+# Run tests in watch mode
+pnpm test:watch
+
+# Run tests with coverage report
+pnpm test:coverage
+
+# Open test UI
+pnpm test:ui
+```
+
+**Coverage Requirements:**
+
+- Overall: 80% lines/statements, 75% functions/branches
+- Critical files (scanner, storage, reducer): 90%+ coverage
+- See [TESTING.md](./TESTING.md) for detailed testing guide
+
+**Current Status:**
+
+- ✅ 70 tests passing
+- ✅ Scanner service (13 tests)
+- ✅ Storage service (29 tests)
+- ✅ Scan reducer (28 tests - all 11 action types)
+
+### Code Quality
+
+```bash
+# Lint TypeScript files
+pnpm lint
+
+# Fix linting issues
+pnpm lint:fix
+
+# Check code formatting
+pnpm format:check
+
+# Format code
+pnpm format
+
+# Type check
+pnpm type-check
+```
+
+### Pre-commit Hooks
+
+This project uses **Husky** and **lint-staged** to enforce code quality:
+
+- ESLint runs on TypeScript files
+- Prettier formats all staged files
+- Conventional commit messages enforced (`feat:`, `fix:`, `docs:`, etc.)
+
+### CI/CD
+
+GitHub Actions runs on every push and PR:
+
+1. **Lint** - ESLint validation
+2. **Format Check** - Prettier validation
+3. **Type Check** - TypeScript compilation
+4. **Test & Coverage** - Full test suite with Codecov upload
+5. **Build** - Production build verification
+6. **Package** - Creates Chrome Web Store .zip (main branch only)
+
+All checks must pass before merging.
 
 ## Contributing
 

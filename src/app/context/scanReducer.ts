@@ -49,7 +49,7 @@ export function scanReducer(state: ScanState, action: ScanAction): ScanState {
         case 'RESET':
             return initialState;
 
-        case 'UPDATE_ISSUE_STATUS':
+        case 'UPDATE_ISSUE_STATUS': {
             if (!state.currentScan) return state;
 
             const updatedIssues = state.currentScan.issues.map(issue =>
@@ -77,6 +77,7 @@ export function scanReducer(state: ScanState, action: ScanAction): ScanState {
                           }
                         : state.selectedIssue,
             };
+        }
 
         case 'SET_VIEW_MODE':
             return {
@@ -90,7 +91,7 @@ export function scanReducer(state: ScanState, action: ScanAction): ScanState {
                 currentChecklist: action.payload,
             };
 
-        case 'UPDATE_CHECKLIST_ITEM':
+        case 'UPDATE_CHECKLIST_ITEM': {
             if (!state.currentChecklist) return state;
 
             const updatedCategories = state.currentChecklist.categories.map(
@@ -125,6 +126,7 @@ export function scanReducer(state: ScanState, action: ScanAction): ScanState {
                     timestamp: Date.now(),
                 },
             };
+        }
 
         case 'RESET_CHECKLIST':
             return {

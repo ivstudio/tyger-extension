@@ -135,7 +135,7 @@ function updateHoverIndicator(element: HTMLElement): void {
 
     try {
         accessibleName = computeAccessibleName(element);
-    } catch (e) {
+    } catch {
         // Ignore errors
     }
 
@@ -237,7 +237,7 @@ function getElementInfo(element: HTMLElement): any {
 
     try {
         accessibleName = computeAccessibleName(element);
-    } catch (e) {
+    } catch {
         // Ignore
     }
 

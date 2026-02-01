@@ -1,12 +1,19 @@
 import { useState } from 'react';
-import { ChecklistItem as ChecklistItemType, ChecklistItemStatus } from '@/types/checklist';
+import {
+    ChecklistItem as ChecklistItemType,
+    ChecklistItemStatus,
+} from '@/types/checklist';
 import { Button } from '../ui/Button';
 import { Check, X, Minus, Circle } from 'lucide-react';
 import { cn } from '@/services/utils';
 
 interface ChecklistItemProps {
     item: ChecklistItemType;
-    onStatusChange: (itemId: string, status: ChecklistItemStatus, notes?: string) => void;
+    onStatusChange: (
+        itemId: string,
+        status: ChecklistItemStatus,
+        notes?: string
+    ) => void;
 }
 
 export function ChecklistItem({ item, onStatusChange }: ChecklistItemProps) {
@@ -49,12 +56,12 @@ export function ChecklistItem({ item, onStatusChange }: ChecklistItemProps) {
     };
 
     return (
-        <div className="border-b border-border last:border-0 py-3">
+        <div className="border-b border-border py-3 last:border-0">
             <div className="space-y-2">
                 <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
-                        <h4 className="font-medium text-sm">{item.title}</h4>
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <h4 className="text-sm font-medium">{item.title}</h4>
+                        <p className="mt-1 text-xs text-muted-foreground">
                             {item.description}
                         </p>
                     </div>
@@ -108,10 +115,12 @@ export function ChecklistItem({ item, onStatusChange }: ChecklistItemProps) {
                         </button>
                         {showNotes && (
                             <textarea
-                                className="w-full text-xs border border-border rounded px-2 py-1 min-h-[60px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="min-h-[60px] w-full rounded border border-border px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 placeholder="Add notes about this check..."
                                 value={notes}
-                                onChange={e => handleNotesChange(e.target.value)}
+                                onChange={e =>
+                                    handleNotesChange(e.target.value)
+                                }
                             />
                         )}
                         {!showNotes && notes && (

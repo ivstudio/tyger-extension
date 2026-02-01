@@ -1,7 +1,7 @@
 import { Issue } from '@/types/issue';
 
 // Overlay state
-let highlightedElements: Map<string, HTMLElement> = new Map();
+const highlightedElements: Map<string, HTMLElement> = new Map();
 let activeTooltip: HTMLElement | null = null;
 
 const SEVERITY_COLORS = {

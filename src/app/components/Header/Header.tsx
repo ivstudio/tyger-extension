@@ -2,8 +2,21 @@ import { useState } from 'react';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { Tabs, TabsList, TabsTrigger } from '../ui/Tabs';
-import { Play, Download, Settings, Target, EyeOff, AlertCircle, ClipboardList } from 'lucide-react';
-import { useScanState, useScanDispatch, useViewMode, useChecklist } from '../../context/ScanContext';
+import {
+    Play,
+    Download,
+    Settings,
+    Target,
+    EyeOff,
+    AlertCircle,
+    ClipboardList,
+} from 'lucide-react';
+import {
+    useScanState,
+    useScanDispatch,
+    useViewMode,
+    useChecklist,
+} from '../../context/ScanContext';
 import { sendMessage } from '@/services/messaging';
 import { MessageType } from '@/types/messages';
 import { downloadJSON } from '@/services/export';
@@ -156,7 +169,10 @@ export default function Header() {
                                     <AlertCircle className="h-4 w-4" />
                                     Issues
                                 </TabsTrigger>
-                                <TabsTrigger value="checklist" className="gap-2">
+                                <TabsTrigger
+                                    value="checklist"
+                                    className="gap-2"
+                                >
                                     <ClipboardList className="h-4 w-4" />
                                     Checklist
                                 </TabsTrigger>
@@ -166,14 +182,26 @@ export default function Header() {
 
                     {viewMode === 'issues' && (
                         <div className="mt-3 flex gap-2">
-                            <Badge variant="outline" className="severity-critical">
-                                Critical: {currentScan.summary.bySeverity.critical}
+                            <Badge
+                                variant="outline"
+                                className="severity-critical"
+                            >
+                                Critical:{' '}
+                                {currentScan.summary.bySeverity.critical}
                             </Badge>
-                            <Badge variant="outline" className="severity-serious">
-                                Serious: {currentScan.summary.bySeverity.serious}
+                            <Badge
+                                variant="outline"
+                                className="severity-serious"
+                            >
+                                Serious:{' '}
+                                {currentScan.summary.bySeverity.serious}
                             </Badge>
-                            <Badge variant="outline" className="severity-moderate">
-                                Moderate: {currentScan.summary.bySeverity.moderate}
+                            <Badge
+                                variant="outline"
+                                className="severity-moderate"
+                            >
+                                Moderate:{' '}
+                                {currentScan.summary.bySeverity.moderate}
                             </Badge>
                             <Badge variant="outline" className="severity-minor">
                                 Minor: {currentScan.summary.bySeverity.minor}

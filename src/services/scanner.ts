@@ -166,7 +166,7 @@ function getElementContext(element: HTMLElement): Issue['context'] {
     let accessibleName: string | undefined;
     try {
         accessibleName = computeAccessibleName(element);
-    } catch (e) {
+    } catch {
         // computeAccessibleName might fail on some elements
         accessibleName = undefined;
     }

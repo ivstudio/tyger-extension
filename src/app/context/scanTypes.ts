@@ -5,10 +5,7 @@ import {
     WCAGLevel,
     IssueStatus,
 } from '@/types/issue';
-import {
-    ManualChecklist,
-    ChecklistItemStatus,
-} from '@/types/checklist';
+import { ManualChecklist, ChecklistItemStatus } from '@/types/checklist';
 
 export type ViewMode = 'issues' | 'checklist';
 

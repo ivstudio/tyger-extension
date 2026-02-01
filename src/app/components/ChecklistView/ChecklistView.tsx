@@ -1,5 +1,9 @@
 import { useEffect } from 'react';
-import { useChecklist, useScanDispatch, useScanState } from '../../context/ScanContext';
+import {
+    useChecklist,
+    useScanDispatch,
+    useScanState,
+} from '../../context/ScanContext';
 import { Accordion } from '../ui/Accordion';
 import { ChecklistCategory } from './ChecklistCategory';
 import { ChecklistItemStatus, DEFAULT_CHECKLISTS } from '@/types/checklist';
@@ -21,7 +25,10 @@ export function ChecklistView() {
             const existingChecklist = await getLatestChecklist(currentScan.url);
 
             if (existingChecklist) {
-                dispatch({ type: 'LOAD_CHECKLIST', payload: existingChecklist });
+                dispatch({
+                    type: 'LOAD_CHECKLIST',
+                    payload: existingChecklist,
+                });
             } else {
                 // Create new checklist from defaults
                 const newChecklist = {
@@ -74,13 +81,14 @@ export function ChecklistView() {
 
     if (!currentScan) {
         return (
-            <div className="flex h-full items-center justify-center text-center p-8">
+            <div className="flex h-full items-center justify-center p-8 text-center">
                 <div className="space-y-2">
                     <p className="text-muted-foreground">
                         Run a scan first to begin manual validation
                     </p>
                     <p className="text-xs text-muted-foreground">
-                        Manual checklists help verify accessibility features that automated tools can't detect
+                        Manual checklists help verify accessibility features
+                        that automated tools can't detect
                     </p>
                 </div>
             </div>
@@ -100,23 +108,28 @@ export function ChecklistView() {
         0
     );
     const completedItems = checklist.categories.reduce(
-        (sum, cat) => sum + cat.items.filter(item => item.status !== 'pending').length,
+        (sum, cat) =>
+            sum + cat.items.filter(item => item.status !== 'pending').length,
         0
     );
     const passedItems = checklist.categories.reduce(
-        (sum, cat) => sum + cat.items.filter(item => item.status === 'pass').length,
+        (sum, cat) =>
+            sum + cat.items.filter(item => item.status === 'pass').length,
         0
     );
     const failedItems = checklist.categories.reduce(
-        (sum, cat) => sum + cat.items.filter(item => item.status === 'fail').length,
+        (sum, cat) =>
+            sum + cat.items.filter(item => item.status === 'fail').length,
         0
     );
-    const completionPercentage = Math.round((completedItems / totalItems) * 100);
+    const completionPercentage = Math.round(
+        (completedItems / totalItems) * 100
+    );
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex h-full flex-col">
             {/* Header */}
-            <div className="border-b border-border p-4 space-y-3">
+            <div className="space-y-3 border-b border-border p-4">
                 <div className="flex items-center justify-between">
                     <h2 className="text-lg font-semibold">Manual Validation</h2>
                     <Button
@@ -124,7 +137,7 @@ export function ChecklistView() {
                         size="sm"
                         onClick={handleResetChecklist}
                     >
-                        <RotateCcw className="h-4 w-4 mr-2" />
+                        <RotateCcw className="mr-2 h-4 w-4" />
                         Reset
                     </Button>
                 </div>
@@ -132,11 +145,16 @@ export function ChecklistView() {
                 {/* Progress Summary */}
                 <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Overall Progress</span>
+                        <span className="text-muted-foreground">
+                            Overall Progress
+                        </span>
                         <div className="flex items-center gap-2">
                             {checklist.completed && (
-                                <Badge variant="default" className="bg-green-600">
-                                    <CheckCircle className="h-3 w-3 mr-1" />
+                                <Badge
+                                    variant="default"
+                                    className="bg-green-600"
+                                >
+                                    <CheckCircle className="mr-1 h-3 w-3" />
                                     Complete
                                 </Badge>
                             )}
@@ -145,7 +163,7 @@ export function ChecklistView() {
                             </span>
                         </div>
                     </div>
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-2 overflow-hidden rounded-full bg-gray-200">
                         <div
                             className="h-full bg-blue-600 transition-all duration-300"
                             style={{ width: `${completionPercentage}%` }}
