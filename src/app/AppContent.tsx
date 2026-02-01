@@ -1,18 +1,54 @@
 import { useEffect, useRef } from 'react';
-import { onMessage } from '@/services/messaging';
+import { onMessage, sendMessage } from '@/services/messaging';
 import { MessageType } from '@/types/messages';
 import { ScanResult } from '@/types/issue';
-import { useScanDispatch, useViewMode } from './context/ScanContext';
+import { useScanState, useScanDispatch, useViewMode } from './context/ScanContext';
 import { Header } from './components/Header';
 import { FilterBar } from './components/FilterBar';
-import { IssueList } from './components/IssueList';
+import { IssueList, IssueListSkeleton } from './components/IssueList';
 import { IssueDetail } from './components/IssueDetail';
 import { ChecklistView } from './components/ChecklistView';
+import EmptyState from './components/EmptyState/EmptyState';
+import { ZeroResultsState } from './components/ZeroResultsState';
+import { cn } from '@/services/utils';
 
 export default function AppContent() {
+    const { hasScannedOnce, isScanning, currentScan } = useScanState();
     const dispatch = useScanDispatch();
     const viewMode = useViewMode();
     const currentTabUrl = useRef<string | null>(null);
+
+    const handleScan = async () => {
+        dispatch({ type: 'SCAN_START' });
+
+        try {
+            const tabs = await chrome.tabs.query({
+                active: true,
+                currentWindow: true,
+            });
+            const activeTab = tabs[0];
+
+            if (!activeTab?.url) {
+                throw new Error('No active tab found');
+            }
+
+            await sendMessage({
+                type: MessageType.SCAN_REQUEST,
+                data: {
+                    url: activeTab.url,
+                    runId: Date.now().toString(),
+                },
+            });
+        } catch (error) {
+            dispatch({
+                type: 'SCAN_ERROR',
+                payload:
+                    error instanceof Error
+                        ? error.message
+                        : 'Failed to start scan',
+            });
+        }
+    };
 
     useEffect(() => {
         const unsubscribe = onMessage(message => {
@@ -71,10 +107,39 @@ export default function AppContent() {
         return () => chrome.tabs.onUpdated.removeListener(handleTabUpdate);
     }, [dispatch]);
 
-    return (
-        <div className="flex h-screen flex-col bg-background">
-            <Header />
-            {viewMode === 'issues' && <FilterBar />}
+    // Determine which content to render
+    const renderMainContent = () => {
+        // Initial state - never scanned
+        if (!hasScannedOnce) {
+            return <EmptyState onScan={handleScan} isScanning={isScanning} />;
+        }
+
+        // Currently scanning - show skeleton
+        if (isScanning) {
+            return (
+                <div className="flex flex-1 overflow-hidden">
+                    <div
+                        className={cn(
+                            'w-2/5 overflow-y-auto border-r border-border',
+                            'animate-fade-in'
+                        )}
+                    >
+                        <IssueListSkeleton />
+                    </div>
+                    <div className="flex-1 overflow-y-auto">
+                        <IssueDetail />
+                    </div>
+                </div>
+            );
+        }
+
+        // Scan complete with zero issues (only in issues view)
+        if (viewMode === 'issues' && currentScan && currentScan.issues.length === 0) {
+            return <ZeroResultsState />;
+        }
+
+        // Scan complete with issues - normal view
+        return (
             <div className="flex flex-1 overflow-hidden">
                 {viewMode === 'issues' ? (
                     <>
@@ -90,6 +155,16 @@ export default function AppContent() {
                         <ChecklistView />
                     </div>
                 )}
+            </div>
+        );
+    };
+
+    return (
+        <div className="flex h-screen flex-col bg-background">
+            <Header />
+            {hasScannedOnce && viewMode === 'issues' && <FilterBar />}
+            <div className="flex flex-1 overflow-hidden">
+                {renderMainContent()}
             </div>
         </div>
     );
