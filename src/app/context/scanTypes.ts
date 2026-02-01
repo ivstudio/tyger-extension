@@ -26,6 +26,7 @@ export interface ScanState {
     filters: Filters;
     isScanning: boolean;
     error: string | null;
+    hasScannedOnce: boolean;
     currentChecklist: ManualChecklist | null;
     viewMode: ViewMode;
 }
@@ -67,6 +68,7 @@ export const initialState: ScanState = {
     },
     isScanning: false,
     error: null,
+    hasScannedOnce: false,
     currentChecklist: null,
     viewMode: 'issues',
 };

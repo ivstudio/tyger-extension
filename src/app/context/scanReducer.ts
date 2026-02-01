@@ -7,6 +7,7 @@ export function scanReducer(state: ScanState, action: ScanAction): ScanState {
                 ...state,
                 isScanning: true,
                 error: null,
+                hasScannedOnce: true,
             };
 
         case 'SCAN_COMPLETE':
