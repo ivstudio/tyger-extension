@@ -34,10 +34,10 @@ The extension has been successfully built and is ready for manual testing in Chr
 
 1. **Click any issue** in the list
 2. **Review** the details on the right:
-   - Issue description
-   - WCAG level and criteria
-   - Element information (selector, HTML)
-   - Recommendations tabs (Developer, QA, Designer)
+    - Issue description
+    - WCAG level and criteria
+    - Element information (selector, HTML)
+    - Recommendations tabs (Developer, QA, Designer)
 
 ✅ **Success:** Issue details display correctly
 
@@ -121,26 +121,31 @@ The extension has been successfully built and is ready for manual testing in Chr
 Try scanning these different types of sites:
 
 ### 1. Accessibility Test Site
+
 **URL:** https://webaim.org/articles/
 **Expected:** Multiple issues across all severity levels
 **Best for:** Verifying scanner works correctly
 
 ### 2. Complex Single Page App
+
 **URL:** https://github.com
 **Expected:** Moderate number of issues
 **Best for:** Testing on modern JavaScript apps
 
 ### 3. Traditional Website
+
 **URL:** https://www.wikipedia.org
 **Expected:** Various accessibility issues
 **Best for:** Testing on content-heavy sites
 
 ### 4. Simple HTML Page
+
 **URL:** https://example.com
 **Expected:** Few or no issues
 **Best for:** Verifying scanner handles simple pages
 
 ### 5. Your Own Projects
+
 **URL:** http://localhost:3000 (or your local dev sites)
 **Expected:** Varies
 **Best for:** Real-world usage testing
@@ -152,6 +157,7 @@ Try scanning these different types of sites:
 ### If Side Panel Doesn't Open
 
 **Check:**
+
 1. Extension is enabled in chrome://extensions
 2. Refresh the extension (click refresh icon)
 3. Try clicking icon again
@@ -161,22 +167,26 @@ Try scanning these different types of sites:
 ### If Scan Doesn't Work
 
 **Check:**
+
 1. Content script loaded (page console should show: "Accessibility Audit content script loaded")
 2. No errors in page console
 3. No errors in side panel console
 
 **Try:**
+
 1. Refresh the web page
 2. Refresh the extension
 3. Run scan again
 
 **Look at:**
+
 - Page console (F12 → Console)
 - Side panel console (right-click panel → Inspect)
 
 ### If No Issues Appear
 
 **Possible causes:**
+
 1. Page actually has no issues (try different site)
 2. Scan failed silently (check consoles for errors)
 3. Content script not loaded (refresh page)
@@ -184,14 +194,17 @@ Try scanning these different types of sites:
 ### Common Console Errors
 
 **"Cannot read property 'run' of undefined"**
+
 - axe-core not loaded
 - Refresh extension and page
 
 **"Chrome API not available"**
+
 - Check manifest.json permissions
 - Reload extension
 
 **"Message validation failed"**
+
 - Message type mismatch
 - Check background console for details
 
@@ -202,12 +215,14 @@ Try scanning these different types of sites:
 Based on the implementation, these features are ready:
 
 ✅ **Core Scanning**
+
 - axe-core integration
 - WCAG 2.0/2.1/2.2 rules
 - All severity levels
 - Element context extraction
 
 ✅ **UI Display**
+
 - Side panel interface
 - Issue list with grouping
 - Issue detail view
@@ -215,18 +230,21 @@ Based on the implementation, these features are ready:
 - WCAG level badges
 
 ✅ **Recommendations**
+
 - Role-specific guidance
 - Code examples
 - Priority levels
 - Multiple recommendations per issue
 
 ✅ **Data Management**
+
 - Chrome storage integration
 - Scan history (last 10 per URL)
 - Issue status tracking
 - Notes per issue
 
 ✅ **Export**
+
 - JSON export
 - Download as file
 - Structured data format
@@ -239,21 +257,25 @@ Based on the implementation, these features are ready:
 These features are planned but not implemented:
 
 ❌ **Visual Highlights** (Phase 4)
+
 - No colored borders on page elements
 - No tooltips on hover
 - No element picker mode
 
 ❌ **Filters & Search** (Phase 5)
+
 - No filter dropdowns
 - No search box
 - Can't filter by severity/WCAG/status
 
 ❌ **Manual Checklists** (Phase 6)
+
 - Checklist templates exist in code
 - No UI to complete them
 - Not included in export
 
 ❌ **Settings** (Phase 7)
+
 - No settings page
 - No first-run experience
 - No analytics opt-in
@@ -263,17 +285,20 @@ These features are planned but not implemented:
 ## Expected Performance
 
 **Scan Times:**
+
 - Simple page (example.com): ~500ms
 - Medium page (Wikipedia): ~1-2 seconds
 - Complex page (GitHub): ~2-3 seconds
 - Very large page: ~3-5 seconds
 
 **Issue Counts (typical):**
+
 - Well-designed site: 0-10 issues
 - Average site: 10-50 issues
 - Problematic site: 50-200+ issues
 
 **Memory Usage:**
+
 - Extension: ~50-100 MB
 - Per scan: ~5-10 MB storage
 
@@ -301,16 +326,19 @@ If you find bugs or unexpected behavior:
 ### 1. Check Console Logs
 
 **Side Panel Console:**
+
 ```
 Right-click side panel → Inspect → Console
 ```
 
 **Page Console:**
+
 ```
 F12 → Console (or right-click page → Inspect)
 ```
 
 **Background Worker:**
+
 ```
 chrome://extensions → Accessibility Audit → Inspect views: service worker
 ```
@@ -323,9 +351,10 @@ chrome://extensions → Accessibility Audit → Inspect views: service worker
 - URL of tested page
 - Chrome version
 
-### 3. Document in TODO.md
+### 3. Document the Issue
 
-Add to the "Known Issues" section with:
+Open a GitHub issue or note in [ROADMAP.md](./ROADMAP.md) with:
+
 - Clear title
 - Description
 - How to reproduce
@@ -338,13 +367,12 @@ Add to the "Known Issues" section with:
 
 ### If Everything Works
 
-1. ✅ Mark Phases 1-3 as tested and working
-2. 🚀 Start Phase 4 (Element Highlighting)
-3. 📝 Update IMPLEMENTATION_STATUS.md
+1. ✅ Mark phases as tested and working
+2. 📝 Update [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md) if needed
 
 ### If Issues Found
 
-1. 🐛 Document in TODO.md
+1. 🐛 Open an issue or note in [ROADMAP.md](./ROADMAP.md)
 2. 🔍 Debug using console logs
 3. 🔧 Fix critical issues
 4. ✅ Re-test
@@ -352,6 +380,7 @@ Add to the "Known Issues" section with:
 ### Priority Fixes
 
 If you encounter these, fix them first:
+
 - Scan doesn't complete
 - No issues display (but should)
 - Extension crashes
@@ -363,12 +392,14 @@ If you encounter these, fix them first:
 ## Development Server
 
 The dev server is currently running in the background:
+
 - **Process ID:** Check terminal
 - **Port:** Vite default (5173)
 - **Watch mode:** ✅ Enabled
 - **Auto-rebuild:** ✅ Active
 
 ### To stop the server:
+
 ```bash
 # Find the process
 ps aux | grep vite
@@ -377,6 +408,7 @@ ps aux | grep vite
 ```
 
 ### To restart:
+
 ```bash
 cd /Users/iggyvillamar/Documents/REPOS/accessibility-extension
 pnpm run dev

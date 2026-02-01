@@ -1,202 +1,120 @@
 # Accessibility Audit Chrome Extension
 
-[![CI](https://github.com/YOUR_USERNAME/accessibility-extension/workflows/CI/badge.svg)](https://github.com/YOUR_USERNAME/accessibility-extension/actions)
-[![codecov](https://codecov.io/gh/YOUR_USERNAME/accessibility-extension/branch/main/graph/badge.svg)](https://codecov.io/gh/YOUR_USERNAME/accessibility-extension)
+[![CI](https://github.com/ivstudio/tyger-extension/actions/workflows/ci.yml/badge.svg)](https://github.com/ivstudio/tyger-extension/actions)
+[![codecov](https://codecov.io/gh/ivstudio/tyger-extension/branch/main/graph/badge.svg)](https://codecov.io/gh/ivstudio/tyger-extension)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A comprehensive accessibility auditing tool powered by axe-core for Chrome. This extension helps developers, QA engineers, and designers identify and fix accessibility issues on web pages.
+A comprehensive accessibility auditing tool powered by axe-core for Chrome. Helps developers, QA, and designers find and fix accessibility issues on web pages.
 
-**📚 [Complete Documentation →](./docs/)**
+**[📚 Documentation](./docs/)**
+
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Development](#development)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
+- [Resources](#resources)
+
+---
 
 ## Features
 
-- **Automated Scanning**: Powered by axe-core for WCAG 2.0/2.1/2.2 compliance checking
-- **Role-Based Recommendations**: Tailored guidance for developers, QA, and designers
-- **Visual Highlighting**: On-page highlights of accessibility violations
-- **Manual Checklists**: Guided validation for issues that can't be automated
-- **Export Reports**: JSON export for integration with issue tracking systems
-- **Diff Detection**: Compare scans to track new and resolved issues
-
-## Quick Start
-
-### Prerequisites
-
-- Node.js 18+ and pnpm (not npm)
-- Chrome browser 114+
-
-### Installation & Setup
-
-```bash
-# Install dependencies
-pnpm install
-
-# Production build (recommended)
-pnpm run build
-```
-
-### Loading in Chrome
-
-1. Open Chrome → `chrome://extensions/`
-2. Enable "Developer mode" (toggle in top right)
-3. Click "Load unpacked"
-4. Select the `dist` directory from this project
-5. Navigate to any website
-6. Click extension icon → Click "Run Scan"
-
-**📖 Detailed setup guide:** [docs/GETTING_STARTED.md](./docs/GETTING_STARTED.md)
-
-## Project Structure
-
-```
-accessibility-extension/
-├── public/
-│   ├── manifest.json       # Chrome extension manifest
-│   └── icons/              # Extension icons
-├── src/
-│   ├── background/         # Service worker
-│   │   └── index.ts
-│   ├── contentScripts/            # Content script (runs on web pages)
-│   │   └── index.ts
-│   ├── sidepanel/          # React UI
-│   │   ├── components/
-│   │   ├── context/
-│   │   ├── App.tsx
-│   │   └── main.tsx
-│   ├── services/                # Shared utilities
-│   │   ├── scanner.ts      # axe-core integration
-│   │   ├── storage.ts      # Chrome storage API
-│   │   └── messaging.ts    # Type-safe messaging
-│   └── types/              # TypeScript types
-│       ├── issue.ts
-│       ├── checklist.ts
-│       └── messages.ts
-├── package.json
-├── tsconfig.json
-├── vite.config.ts
-└── tailwind.config.js
-```
+- **Automated Scanning** — axe-core for WCAG 2.0/2.1/2.2 compliance
+- **Role-Based Recommendations** — Guidance for developers, QA, and designers
+- **Visual Highlighting** — On-page highlights of violations
+- **Manual Checklists** — Validation for issues that can’t be automated
+- **Export Reports** — JSON export for issue tracking
+- **Diff Detection** — Compare scans for new and resolved issues
 
 ## Tech Stack
 
-- **Runtime**: Chrome Extension Manifest V3
-- **Framework**: React 18 with TypeScript
-- **Build**: Vite with @crxjs/vite-plugin
-- **UI**: Tailwind CSS + shadcn/ui (Radix)
-- **Scanner**: axe-core 4.8+
-- **Icons**: Lucide React
-- **Validation**: Zod for message schemas
+![Chrome Extension](https://img.shields.io/badge/Chrome_Extension_MV3-4285F4?style=flat&logo=googlechrome&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?style=flat&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=flat&logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?style=flat&logo=tailwindcss&logoColor=white)
+![Radix](https://img.shields.io/badge/shadcn_ui-Radix-161618?style=flat&logo=radixui&logoColor=white)
+![axe-core](https://img.shields.io/badge/axe--core-4.8.3-F34F64?style=flat&logo=deque&logoColor=white)
+![Lucide](https://img.shields.io/badge/Lucide-React-B8B8B8?style=flat&logo=lucide&logoColor=white)
+![Zod](https://img.shields.io/badge/Zod-4-3E4A59?style=flat&logo=zod&logoColor=white)
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm (not npm)
+- Chrome 114+
+
+### Install
+
+```bash
+pnpm install
+pnpm run build
+```
+
+### Load in Chrome
+
+1. Open `chrome://extensions/`
+2. Enable **Developer mode**
+3. Click **Load unpacked** → select the `dist` folder
+4. Open any page → extension icon → **Run Scan**
 
 ## Usage
 
-1. Click the extension icon to open the side panel
-2. Click "Run Scan" to analyze the current page
-3. Review issues grouped by severity (Critical, Serious, Moderate, Minor)
-4. Select an issue to view:
-    - Detailed description
-    - Element location and HTML
-    - Role-specific recommendations
-    - WCAG criteria
-5. Update issue status (Fixed, Ignored, Needs Design)
-6. Export results as JSON
-
-## Roadmap
-
-### v1.0 (Current)
-
-- [x] Core scanning with axe-core
-- [x] Side panel UI with issue list
-- [x] Role-based recommendations
-- [x] JSON export
-- [ ] Visual highlights on page
-- [ ] Element picker
-- [ ] Manual checklists
-- [ ] Scan diff detection
-
-### v1.1 (Future)
-
-- [ ] HTML/Markdown export formats
-- [ ] Custom rule configuration
-- [ ] Firefox support
-- [ ] Automated re-scanning on DOM changes
-- [ ] Analytics opt-in
+1. Open the side panel from the extension icon
+2. Click **Run Scan** to analyze the page
+3. Review issues by severity (Critical, Serious, Moderate, Minor)
+4. Select an issue for description, element location, recommendations, and WCAG criteria
+5. Set status (Fixed, Ignored, Needs Design) or export as JSON
 
 ## Development
 
 ### Testing
 
-This project uses **Vitest** with comprehensive test coverage for services, reducers, and components.
-
 ```bash
-# Run all tests
-pnpm test:run
-
-# Run tests in watch mode
-pnpm test:watch
-
-# Run tests with coverage report
-pnpm test:coverage
-
-# Open test UI
-pnpm test:ui
+pnpm test:run        # run all tests
+pnpm test:watch     # watch mode
+pnpm test:coverage   # coverage report
+pnpm test:ui        # test UI
 ```
 
-**Coverage Requirements:**
-
-- Overall: 80% lines/statements, 75% functions/branches
-- Critical files (scanner, storage, reducer): 90%+ coverage
-- See [TESTING.md](./TESTING.md) for detailed testing guide
-
-**Current Status:**
-
-- ✅ 70 tests passing
-- ✅ Scanner service (13 tests)
-- ✅ Storage service (29 tests)
-- ✅ Scan reducer (28 tests - all 11 action types)
-
-### Code Quality
+### Lint & Format
 
 ```bash
-# Lint TypeScript files
-pnpm lint
-
-# Fix linting issues
-pnpm lint:fix
-
-# Check code formatting
-pnpm format:check
-
-# Format code
-pnpm format
-
-# Type check
-pnpm type-check
+pnpm lint           # ESLint
+pnpm lint:fix       # auto-fix
+pnpm format:check   # check formatting
+pnpm format         # format files
+pnpm type-check     # TypeScript
 ```
 
-### Pre-commit Hooks
+### Pre-commit
 
-This project uses **Husky** and **lint-staged** to enforce code quality:
+Husky + lint-staged: ESLint and Prettier on staged files; commitlint for conventional commits (`feat:`, `fix:`, etc.).
 
-- ESLint runs on TypeScript files
-- Prettier formats all staged files
-- Conventional commit messages enforced (`feat:`, `fix:`, `docs:`, etc.)
+## Documentation
 
-### CI/CD
+| Topic   | Doc                                                               |
+| ------- | ----------------------------------------------------------------- |
+| Setup   | [GETTING_STARTED.md](./docs/GETTING_STARTED.md)                   |
+| Testing | [TESTING.md](./docs/TESTING.md)                                   |
+| Roadmap | [ROADMAP.md](./docs/ROADMAP.md)                                   |
+| CI/CD   | [TESTING.md#cicd-integration](./docs/TESTING.md#cicd-integration) |
 
-GitHub Actions runs on every push and PR:
-
-1. **Lint** - ESLint validation
-2. **Format Check** - Prettier validation
-3. **Type Check** - TypeScript compilation
-4. **Test & Coverage** - Full test suite with Codecov upload
-5. **Build** - Production build verification
-6. **Package** - Creates Chrome Web Store .zip (main branch only)
-
-All checks must pass before merging.
+Full index: **[docs/README.md](./docs/README.md)**
 
 ## Contributing
 
-This is currently a personal project, but contributions are welcome. Please open an issue first to discuss proposed changes.
+Contributions are welcome. Open an issue first to discuss changes.
 
 ## License
 
@@ -204,6 +122,6 @@ TBD
 
 ## Resources
 
-- [axe-core Documentation](https://github.com/dequelabs/axe-core)
-- [WCAG Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
-- [Chrome Extension Docs](https://developer.chrome.com/docs/extensions/)
+- [axe-core](https://github.com/dequelabs/axe-core)
+- [WCAG Quick Reference](https://www.w3.org/WAI/WCAG21/quickref/)
+- [Chrome Extensions](https://developer.chrome.com/docs/extensions/)
