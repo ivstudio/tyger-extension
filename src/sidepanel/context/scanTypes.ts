@@ -29,6 +29,7 @@ export type ScanAction =
     | { type: 'SELECT_ISSUE'; payload: Issue | null }
     | { type: 'UPDATE_FILTERS'; payload: Partial<Filters> }
     | { type: 'CLEAR_FILTERS' }
+    | { type: 'RESET' }
     | {
           type: 'UPDATE_ISSUE_STATUS';
           payload: { issueId: string; status: IssueStatus; notes?: string };
