@@ -62,7 +62,7 @@ export const InspectElementSchema = z.object({
   type: z.literal(MessageType.INSPECT_ELEMENT),
   data: z.object({
     selector: z.string(),
-    elementInfo: z.record(z.any())
+    elementInfo: z.record(z.string(), z.any())
   })
 });
 

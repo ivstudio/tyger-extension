@@ -54,7 +54,7 @@ export async function saveScanResult(result: ScanResult): Promise<void> {
  */
 export async function getScanResults(): Promise<StoredScans> {
   const result = await browser.storage.local.get(STORAGE_KEYS.SCAN_RESULTS);
-  return result[STORAGE_KEYS.SCAN_RESULTS] || {};
+  return (result[STORAGE_KEYS.SCAN_RESULTS] || {}) as StoredScans;
 }
 
 /**
@@ -144,7 +144,7 @@ export async function saveChecklist(checklist: ManualChecklist): Promise<void> {
  */
 export async function getChecklists(): Promise<StoredChecklists> {
   const result = await browser.storage.local.get(STORAGE_KEYS.CHECKLISTS);
-  return result[STORAGE_KEYS.CHECKLISTS] || {};
+  return (result[STORAGE_KEYS.CHECKLISTS] || {}) as StoredChecklists;
 }
 
 /**
@@ -161,10 +161,10 @@ export async function getLatestChecklist(url: string): Promise<ManualChecklist |
  */
 export async function getSettings(): Promise<Settings> {
   const result = await browser.storage.local.get(STORAGE_KEYS.SETTINGS);
-  return result[STORAGE_KEYS.SETTINGS] || {
+  return (result[STORAGE_KEYS.SETTINGS] || {
     analyticsEnabled: false,
     firstRunComplete: false
-  };
+  }) as Settings;
 }
 
 /**
