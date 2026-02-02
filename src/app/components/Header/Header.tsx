@@ -51,8 +51,6 @@ export default function Header() {
     };
 
     const handleScan = async () => {
-        dispatch({ type: 'SCAN_START' });
-
         try {
             const tabs = await chrome.tabs.query({
                 active: true,
@@ -63,6 +61,8 @@ export default function Header() {
             if (!activeTab?.url) {
                 throw new Error('No active tab found');
             }
+
+            dispatch({ type: 'SCAN_START', payload: activeTab.url });
 
             await sendMessage({
                 type: MessageType.SCAN_REQUEST,

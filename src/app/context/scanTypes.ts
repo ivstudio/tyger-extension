@@ -26,10 +26,11 @@ export interface ScanState {
     hasScannedOnce: boolean;
     currentChecklist: ManualChecklist | null;
     viewMode: ViewMode;
+    currentUrl: string | null;
 }
 
 export type ScanAction =
-    | { type: 'SCAN_START' }
+    | { type: 'SCAN_START'; payload?: string }
     | { type: 'SCAN_COMPLETE'; payload: ScanResult }
     | { type: 'SCAN_ERROR'; payload: string }
     | { type: 'SELECT_ISSUE'; payload: Issue | null }
@@ -51,7 +52,8 @@ export type ScanAction =
               notes?: string;
           };
       }
-    | { type: 'RESET_CHECKLIST' };
+    | { type: 'RESET_CHECKLIST' }
+    | { type: 'SET_CURRENT_URL'; payload: string };
 
 export const initialState: ScanState = {
     currentScan: null,
@@ -68,4 +70,5 @@ export const initialState: ScanState = {
     hasScannedOnce: false,
     currentChecklist: null,
     viewMode: 'issues',
+    currentUrl: null,
 };

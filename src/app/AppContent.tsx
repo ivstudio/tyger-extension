@@ -17,14 +17,13 @@ import { ZeroResultsState } from './components/ZeroResultsState';
 import { cn } from '@/services/utils';
 
 export default function AppContent() {
-    const { hasScannedOnce, isScanning, currentScan } = useScanState();
+    const { hasScannedOnce, isScanning, currentScan, currentUrl } =
+        useScanState();
     const dispatch = useScanDispatch();
     const viewMode = useViewMode();
     const currentTabUrl = useRef<string | null>(null);
 
     const handleScan = async () => {
-        dispatch({ type: 'SCAN_START' });
-
         try {
             const tabs = await chrome.tabs.query({
                 active: true,
@@ -35,6 +34,8 @@ export default function AppContent() {
             if (!activeTab?.url) {
                 throw new Error('No active tab found');
             }
+
+            dispatch({ type: 'SCAN_START', payload: activeTab.url });
 
             await sendMessage({
                 type: MessageType.SCAN_REQUEST,
@@ -97,6 +98,7 @@ export default function AppContent() {
                     dispatch({ type: 'RESET' });
                 }
                 currentTabUrl.current = changeInfo.url;
+                dispatch({ type: 'SET_CURRENT_URL', payload: changeInfo.url });
             }
         };
 
@@ -104,6 +106,7 @@ export default function AppContent() {
         chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
             if (tabs[0]?.url) {
                 currentTabUrl.current = tabs[0].url;
+                dispatch({ type: 'SET_CURRENT_URL', payload: tabs[0].url });
             }
         });
 
@@ -115,7 +118,13 @@ export default function AppContent() {
     const renderMainContent = () => {
         // Initial state - never scanned
         if (!hasScannedOnce) {
-            return <EmptyState onScan={handleScan} isScanning={isScanning} />;
+            return (
+                <EmptyState
+                    onScan={handleScan}
+                    isScanning={isScanning}
+                    currentUrl={currentUrl}
+                />
+            );
         }
 
         // Currently scanning - show skeleton

@@ -4,32 +4,65 @@ import { Play } from 'lucide-react';
 interface EmptyStateProps {
     onScan: () => void;
     isScanning: boolean;
+    currentUrl: string | null;
 }
 
-export default function EmptyState({ onScan, isScanning }: EmptyStateProps) {
+export default function EmptyState({
+    onScan,
+    isScanning,
+    currentUrl,
+}: EmptyStateProps) {
+    const getDisplayUrl = (url: string | null) => {
+        if (!url) return null;
+        try {
+            const urlObj = new URL(url);
+            return urlObj.hostname + urlObj.pathname;
+        } catch {
+            return url;
+        }
+    };
+
+    const sectionGap = 'mb-5';
+    const headerGap = 'mb-2';
+
     return (
-        <div className="flex h-full w-full justify-center px-8 pt-24">
+        <div className="flex h-full w-full justify-center px-8 pt-20">
             <div className="max-w-xl text-left">
-                <h2 className="mb-4 text-[28px] leading-tight font-bold">
-                    Check for common accessibility issues
+                <h2
+                    className={`max-w-3xl text-3xl leading-tight font-bold ${headerGap}`}
+                >
+                    Accessibility review
                 </h2>
-                <p className="mb-6 text-base leading-relaxed text-muted-foreground">
-                    This scan analyzes the currently visible page for common
-                    accessibility issues aligned with WCAG guidelines. Results
-                    and recommendations will appear here once the scan is
-                    complete.
+                <p
+                    className={`text-base leading-relaxed text-muted-foreground ${sectionGap}`}
+                >
+                    Highlights accessibility issues on the page and shows what
+                    needs to be fixed.
                 </p>
+                {currentUrl && (
+                    <div className={sectionGap}>
+                        <p className="mb-1.5 text-sm font-medium text-muted-foreground">
+                            Target page:
+                        </p>
+                        <div className="rounded-md border border-border bg-muted/50 px-4 py-3">
+                            <p className="font-mono text-sm break-all text-foreground">
+                                {getDisplayUrl(currentUrl)}
+                            </p>
+                        </div>
+                    </div>
+                )}
 
                 <Button
                     onClick={onScan}
                     disabled={isScanning}
-                    className="mb-10 gap-2"
+                    size="lg"
+                    className="gap-2"
                 >
-                    <Play className="h-4 w-4" />
-                    {isScanning ? 'Scanning...' : 'Run Scan'}
+                    <Play className="h-5 w-5" />
+                    {isScanning ? 'Scanning...' : 'Scan this page'}
                 </Button>
 
-                <div>
+                {/* <div>
                     <h3 className="mb-3 text-base font-bold tracking-wide text-foreground">
                         What this scan checks:
                     </h3>
@@ -39,7 +72,7 @@ export default function EmptyState({ onScan, isScanning }: EmptyStateProps) {
                         <li>Keyboard focus and navigation issues</li>
                         <li>Invalid or incomplete ARIA attributes</li>
                     </ul>
-                </div>
+                </div> */}
             </div>
         </div>
     );

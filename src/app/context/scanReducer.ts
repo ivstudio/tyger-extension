@@ -8,6 +8,7 @@ export function scanReducer(state: ScanState, action: ScanAction): ScanState {
                 isScanning: true,
                 error: null,
                 hasScannedOnce: true,
+                currentUrl: action.payload || state.currentUrl,
             };
 
         case 'SCAN_COMPLETE':
@@ -133,6 +134,12 @@ export function scanReducer(state: ScanState, action: ScanAction): ScanState {
             return {
                 ...state,
                 currentChecklist: null,
+            };
+
+        case 'SET_CURRENT_URL':
+            return {
+                ...state,
+                currentUrl: action.payload,
             };
 
         default:

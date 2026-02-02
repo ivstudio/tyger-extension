@@ -23,6 +23,28 @@ describe('scanReducer', () => {
             expect(nextState.error).toBeNull();
         });
 
+        it('should set currentUrl when payload is provided', () => {
+            const url = 'https://example.com/page';
+            const nextState = scanReducer(initialState, {
+                type: 'SCAN_START',
+                payload: url,
+            });
+
+            expect(nextState.currentUrl).toBe(url);
+            expect(nextState.isScanning).toBe(true);
+        });
+
+        it('should preserve currentUrl when payload is not provided', () => {
+            const prevState: ScanState = {
+                ...initialState,
+                currentUrl: 'https://example.com',
+            };
+
+            const nextState = scanReducer(prevState, { type: 'SCAN_START' });
+
+            expect(nextState.currentUrl).toBe('https://example.com');
+        });
+
         it('should preserve other state properties', () => {
             const currentScan = createMockScanResult();
             const prevState: ScanState = {
@@ -196,6 +218,7 @@ describe('scanReducer', () => {
                 hasScannedOnce: true,
                 currentChecklist: createMockManualChecklist(),
                 viewMode: 'checklist',
+                currentUrl: 'https://example.com',
             };
 
             const nextState = scanReducer(complexState, { type: 'RESET' });
@@ -591,6 +614,33 @@ describe('scanReducer', () => {
             });
 
             expect(nextState.currentChecklist).toBeNull();
+        });
+    });
+
+    describe('SET_CURRENT_URL', () => {
+        it('should set current URL', () => {
+            const url = 'https://example.com/page';
+
+            const nextState = scanReducer(initialState, {
+                type: 'SET_CURRENT_URL',
+                payload: url,
+            });
+
+            expect(nextState.currentUrl).toBe(url);
+        });
+
+        it('should update current URL', () => {
+            const prevState: ScanState = {
+                ...initialState,
+                currentUrl: 'https://old-url.com',
+            };
+
+            const nextState = scanReducer(prevState, {
+                type: 'SET_CURRENT_URL',
+                payload: 'https://new-url.com',
+            });
+
+            expect(nextState.currentUrl).toBe('https://new-url.com');
         });
     });
 
