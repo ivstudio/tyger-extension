@@ -32,7 +32,7 @@ export default function EmptyState({
     return (
         <div className="flex h-full flex-col">
             {/* Main content area */}
-            <div className="flex-1 overflow-y-auto px-6 pt-12 pb-32">
+            <div className="flex-1 overflow-y-auto px-8 pt-12 pb-32">
                 <div className="flex flex-col items-center text-center">
                     {/* Shield icon */}
                     <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary">
@@ -90,7 +90,7 @@ export default function EmptyState({
             </div>
 
             {/* Fixed bottom section */}
-            <div className="fixed right-0 bottom-0 left-0 border-t border-border bg-background px-6 py-4">
+            <div className="fixed right-0 bottom-0 left-0 border-t border-border bg-background px-8 pt-4 pb-6">
                 <Button
                     onClick={onScan}
                     disabled={isScanning}
