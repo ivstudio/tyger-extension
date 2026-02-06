@@ -1,11 +1,18 @@
 import { Button } from '../ui/Button';
-import { Play } from 'lucide-react';
+import { ShieldCheck, Zap, Eye, Keyboard, FileText } from 'lucide-react';
 
 interface EmptyStateProps {
     onScan: () => void;
     isScanning: boolean;
     currentUrl: string | null;
 }
+
+const SCAN_FEATURES = [
+    { icon: Eye, label: 'Color Contrast' },
+    { icon: Keyboard, label: 'Keyboard Navigation' },
+    { icon: FileText, label: 'ARIA Labels' },
+    { icon: ShieldCheck, label: 'WCAG Compliance' },
+] as const;
 
 export default function EmptyState({
     onScan,
@@ -22,57 +29,78 @@ export default function EmptyState({
         }
     };
 
-    const sectionGap = 'mb-5';
-    const headerGap = 'mb-2';
-
     return (
-        <div className="flex h-full w-full justify-center px-8 pt-20">
-            <div className="max-w-xl text-left">
-                <h2
-                    className={`max-w-3xl text-3xl leading-tight font-bold ${headerGap}`}
-                >
-                    Accessibility review
-                </h2>
-                <p
-                    className={`text-base leading-relaxed text-muted-foreground ${sectionGap}`}
-                >
-                    Highlights accessibility issues on the page and shows what
-                    needs to be fixed.
-                </p>
-                {currentUrl && (
-                    <div className={sectionGap}>
-                        <p className="mb-1.5 text-sm font-medium text-muted-foreground">
-                            Target page:
-                        </p>
-                        <div className="rounded-md border border-border bg-muted/50 px-4 py-3">
-                            <p className="font-mono text-sm break-all text-foreground">
-                                {getDisplayUrl(currentUrl)}
+        <div className="flex h-full flex-col">
+            {/* Main content area */}
+            <div className="flex-1 overflow-y-auto px-6 pt-12 pb-32">
+                <div className="flex flex-col items-center text-center">
+                    {/* Shield icon */}
+                    <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary">
+                        <ShieldCheck className="h-8 w-8 text-primary-foreground" />
+                    </div>
+
+                    {/* Title */}
+                    <h2 className="mb-2 text-2xl font-bold text-foreground">
+                        Accessibility Scanner
+                    </h2>
+
+                    {/* Description */}
+                    <p className="mb-8 max-w-xs text-sm leading-relaxed text-muted-foreground">
+                        Analyze your page for accessibility issues and get
+                        actionable recommendations to improve compliance.
+                    </p>
+
+                    {/* Page to scan section */}
+                    {currentUrl && (
+                        <div className="mb-8 w-full text-left">
+                            <p className="mb-2 text-xs font-medium text-muted-foreground">
+                                Page to scan
                             </p>
+                            <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/50 px-4 py-3">
+                                <span className="h-2 w-2 rounded-full bg-green-500" />
+                                <p className="font-mono text-sm break-all text-foreground">
+                                    {getDisplayUrl(currentUrl)}
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* What we scan for section */}
+                    <div className="w-full text-left">
+                        <p className="mb-3 text-xs font-medium text-muted-foreground">
+                            What we scan for
+                        </p>
+                        <div className="grid grid-cols-2 gap-2">
+                            {SCAN_FEATURES.map(({ icon: Icon, label }) => (
+                                <div
+                                    key={label}
+                                    className="flex items-center gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2.5"
+                                >
+                                    <Icon className="h-4 w-4 text-primary" />
+                                    <span className="text-sm text-foreground">
+                                        {label}
+                                    </span>
+                                </div>
+                            ))}
                         </div>
                     </div>
-                )}
+                </div>
+            </div>
 
+            {/* Fixed bottom section */}
+            <div className="fixed right-0 bottom-0 left-0 border-t border-border bg-background px-6 py-4">
                 <Button
                     onClick={onScan}
                     disabled={isScanning}
                     size="lg"
-                    className="gap-2"
+                    className="w-full gap-2"
                 >
-                    <Play className="h-5 w-5" />
-                    {isScanning ? 'Scanning...' : 'Scan this page'}
+                    <Zap className="h-5 w-5" />
+                    {isScanning ? 'Scanning...' : 'Start Accessibility Scan'}
                 </Button>
-
-                {/* <div>
-                    <h3 className="mb-3 text-base font-bold tracking-wide text-foreground">
-                        What this scan checks:
-                    </h3>
-                    <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted-foreground">
-                        <li>Color contrast and text readability</li>
-                        <li>Missing or incorrect labels</li>
-                        <li>Keyboard focus and navigation issues</li>
-                        <li>Invalid or incomplete ARIA attributes</li>
-                    </ul>
-                </div> */}
+                <p className="mt-2 text-center text-xs text-muted-foreground">
+                    Scans typically complete in under 5 seconds
+                </p>
             </div>
         </div>
     );

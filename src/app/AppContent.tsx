@@ -180,7 +180,7 @@ export default function AppContent() {
         <div className="flex h-screen flex-col bg-background">
             {hasScannedOnce && <Header />}
             {hasScannedOnce && viewMode === 'issues' && <FilterBar />}
-            <div className="flex flex-1 overflow-hidden">
+            <div className="flex flex-1 justify-center overflow-hidden">
                 {renderMainContent()}
             </div>
         </div>
