@@ -23,8 +23,9 @@ export default function AppContent() {
     const viewMode = useViewMode();
     const currentTabUrl = useRef<string | null>(null);
 
-    // State for animation control
+    // State for animation control - use refs to avoid stale closures
     const [isAnimating, setIsAnimating] = useState(false);
+    const animationDoneRef = useRef(false);
     const bufferedResultRef = useRef<ScanResult | null>(null);
 
     const handleScan = async () => {
@@ -41,6 +42,7 @@ export default function AppContent() {
 
             // Start animation
             setIsAnimating(true);
+            animationDoneRef.current = false;
             bufferedResultRef.current = null;
 
             dispatch({ type: 'SCAN_START', payload: activeTab.url });
@@ -65,29 +67,33 @@ export default function AppContent() {
     };
 
     const handleAnimationComplete = useCallback(() => {
-        setIsAnimating(false);
-        // If we have a buffered result, dispatch it now
+        animationDoneRef.current = true;
+        // If we have a buffered result, dispatch it and end animation
         if (bufferedResultRef.current) {
             dispatch({
                 type: 'SCAN_COMPLETE',
                 payload: bufferedResultRef.current,
             });
             bufferedResultRef.current = null;
+            setIsAnimating(false);
         }
+        // Otherwise, keep showing animation until scan completes
     }, [dispatch]);
 
     useEffect(() => {
         const unsubscribe = onMessage(message => {
             if (message.type === MessageType.SCAN_COMPLETE) {
                 const result = message.data.result as ScanResult;
-                // If animation is playing, buffer the result
-                if (isAnimating) {
+                // If animation hasn't finished yet, buffer the result
+                if (!animationDoneRef.current) {
                     bufferedResultRef.current = result;
                 } else {
+                    // Animation is done, dispatch result and end animation
                     dispatch({
                         type: 'SCAN_COMPLETE',
                         payload: result,
                     });
+                    setIsAnimating(false);
                 }
             } else if (message.type === MessageType.SCAN_ERROR) {
                 setIsAnimating(false);
@@ -98,7 +104,7 @@ export default function AppContent() {
             }
         });
         return unsubscribe;
-    }, [dispatch, isAnimating]);
+    }, [dispatch]);
 
     // Establish connection to worker for cleanup on close
     useEffect(() => {

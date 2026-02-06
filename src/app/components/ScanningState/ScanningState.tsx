@@ -109,9 +109,9 @@ export default function ScanningState({
             {/* Main content area */}
             <div className="flex-1 overflow-y-auto px-8 pt-12 pb-24">
                 <div className="flex flex-col items-center text-center">
-                    {/* Animated shield icon with spinning border */}
-                    <div className="relative mb-5">
-                        <div className="animate-spin-slow absolute inset-0 h-16 w-16 rounded-2xl border-2 border-dashed border-primary" />
+                    {/* Animated shield icon with spinner border */}
+                    <div className="relative mb-5 flex items-center justify-center">
+                        <div className="animate-spinner-border absolute h-20 w-20 rounded-2xl border-[3px]" />
                         <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary">
                             <ShieldCheck className="h-8 w-8 text-primary-foreground" />
                         </div>
