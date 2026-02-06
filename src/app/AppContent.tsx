@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { onMessage, sendMessage } from '@/services/messaging';
 import { MessageType } from '@/types/messages';
 import { ScanResult } from '@/types/issue';
@@ -9,12 +9,12 @@ import {
 } from './context/ScanContext';
 import { Header } from './components/Header';
 import { FilterBar } from './components/FilterBar';
-import { IssueList, IssueListSkeleton } from './components/IssueList';
+import { IssueList } from './components/IssueList';
 import { IssueDetail } from './components/IssueDetail';
 import { ChecklistView } from './components/ChecklistView';
 import EmptyState from './components/EmptyState/EmptyState';
+import { ScanningState } from './components/ScanningState';
 import { ZeroResultsState } from './components/ZeroResultsState';
-import { cn } from '@/services/utils';
 
 export default function AppContent() {
     const { hasScannedOnce, isScanning, currentScan, currentUrl } =
@@ -22,6 +22,10 @@ export default function AppContent() {
     const dispatch = useScanDispatch();
     const viewMode = useViewMode();
     const currentTabUrl = useRef<string | null>(null);
+
+    // State for animation control
+    const [isAnimating, setIsAnimating] = useState(false);
+    const bufferedResultRef = useRef<ScanResult | null>(null);
 
     const handleScan = async () => {
         try {
@@ -35,6 +39,10 @@ export default function AppContent() {
                 throw new Error('No active tab found');
             }
 
+            // Start animation
+            setIsAnimating(true);
+            bufferedResultRef.current = null;
+
             dispatch({ type: 'SCAN_START', payload: activeTab.url });
 
             await sendMessage({
@@ -45,6 +53,7 @@ export default function AppContent() {
                 },
             });
         } catch (error) {
+            setIsAnimating(false);
             dispatch({
                 type: 'SCAN_ERROR',
                 payload:
@@ -55,14 +64,33 @@ export default function AppContent() {
         }
     };
 
+    const handleAnimationComplete = useCallback(() => {
+        setIsAnimating(false);
+        // If we have a buffered result, dispatch it now
+        if (bufferedResultRef.current) {
+            dispatch({
+                type: 'SCAN_COMPLETE',
+                payload: bufferedResultRef.current,
+            });
+            bufferedResultRef.current = null;
+        }
+    }, [dispatch]);
+
     useEffect(() => {
         const unsubscribe = onMessage(message => {
             if (message.type === MessageType.SCAN_COMPLETE) {
-                dispatch({
-                    type: 'SCAN_COMPLETE',
-                    payload: message.data.result as ScanResult,
-                });
+                const result = message.data.result as ScanResult;
+                // If animation is playing, buffer the result
+                if (isAnimating) {
+                    bufferedResultRef.current = result;
+                } else {
+                    dispatch({
+                        type: 'SCAN_COMPLETE',
+                        payload: result,
+                    });
+                }
             } else if (message.type === MessageType.SCAN_ERROR) {
+                setIsAnimating(false);
                 dispatch({
                     type: 'SCAN_ERROR',
                     payload: message.data.error,
@@ -70,7 +98,7 @@ export default function AppContent() {
             }
         });
         return unsubscribe;
-    }, [dispatch]);
+    }, [dispatch, isAnimating]);
 
     // Establish connection to worker for cleanup on close
     useEffect(() => {
@@ -116,8 +144,8 @@ export default function AppContent() {
 
     // Determine which content to render
     const renderMainContent = () => {
-        // Initial state - never scanned
-        if (!hasScannedOnce) {
+        // Initial state - never scanned and not animating
+        if (!hasScannedOnce && !isAnimating) {
             return (
                 <EmptyState
                     onScan={handleScan}
@@ -127,22 +155,13 @@ export default function AppContent() {
             );
         }
 
-        // Currently scanning - show skeleton
-        if (isScanning) {
+        // Currently scanning - show animated scanning state
+        if (isAnimating) {
             return (
-                <div className="flex flex-1 overflow-hidden">
-                    <div
-                        className={cn(
-                            'w-2/5 overflow-y-auto border-r border-border',
-                            'animate-fade-in'
-                        )}
-                    >
-                        <IssueListSkeleton />
-                    </div>
-                    <div className="flex-1 overflow-y-auto">
-                        <IssueDetail />
-                    </div>
-                </div>
+                <ScanningState
+                    currentUrl={currentUrl}
+                    onAnimationComplete={handleAnimationComplete}
+                />
             );
         }
 
@@ -176,10 +195,13 @@ export default function AppContent() {
         );
     };
 
+    // Show header and filter bar only when not animating and has scanned
+    const showHeader = hasScannedOnce && !isAnimating;
+
     return (
         <div className="flex h-screen flex-col bg-background">
-            {hasScannedOnce && <Header />}
-            {hasScannedOnce && viewMode === 'issues' && <FilterBar />}
+            {showHeader && <Header />}
+            {showHeader && viewMode === 'issues' && <FilterBar />}
             <div className="flex flex-1 justify-center overflow-hidden">
                 {renderMainContent()}
             </div>
