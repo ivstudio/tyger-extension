@@ -92,16 +92,12 @@ export default function ScanningState({
         }
         if (index === currentStep) {
             return (
-                <div className="flex h-6 w-6 items-center justify-center">
-                    <div className="h-3 w-3 animate-pulse rounded-full bg-primary" />
+                <div className="flex h-6 w-6 animate-pulse items-center justify-center rounded-full bg-primary/30">
+                    <div className="h-3 w-3 rounded-full bg-primary" />
                 </div>
             );
         }
-        return (
-            <div className="flex h-6 w-6 items-center justify-center">
-                <div className="h-3 w-3 rounded-full bg-muted" />
-            </div>
-        );
+        return <div className="h-6 w-6 rounded-full bg-muted" />;
     };
 
     return (
@@ -177,7 +173,7 @@ export default function ScanningState({
             </div>
 
             {/* Fixed bottom section */}
-            <div className="fixed right-0 bottom-0 left-0 border-t border-border bg-background px-8 py-4">
+            <div className="fixed right-0 bottom-0 left-0 border-t border-border bg-background px-8 pt-4 pb-8">
                 <p className="text-center text-sm text-muted-foreground">
                     Analyzing accessibility issues...
                 </p>
