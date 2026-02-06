@@ -7,10 +7,10 @@ interface ScanningStateProps {
 }
 
 const SCAN_STEPS = [
-    'Analyzing DOM structure...',
     'Checking color contrast...',
-    'Validating ARIA labels...',
-    'Testing keyboard navigation...',
+    'Validating form labels...',
+    'Verifying image alt text...',
+    'Confirming button & link names...',
     'Verifying WCAG compliance...',
 ] as const;
 
