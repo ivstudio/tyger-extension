@@ -45,9 +45,11 @@ export default function EmptyState({
                     </h2>
 
                     {/* Description */}
-                    <p className="mb-8 max-w-xs text-sm leading-relaxed text-muted-foreground">
-                        Analyze your page for accessibility issues and get
-                        actionable recommendations to improve compliance.
+                    <p className="mb-8 text-sm leading-relaxed text-muted-foreground">
+                        Analyze your page for accessibility issues
+                        <br />
+                        and get actionable recommendations to improve
+                        compliance.
                     </p>
 
                     {/* Page to scan section */}
