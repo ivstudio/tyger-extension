@@ -1,10 +1,10 @@
 import { ScanProvider } from './context/ScanContext';
-import AppContent from './AppContent';
+import MainView from './MainView';
 
-export default function App() {
+export function App() {
     return (
         <ScanProvider>
-            <AppContent />
+            <MainView />
         </ScanProvider>
     );
 }

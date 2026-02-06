@@ -2,18 +2,20 @@ import browser from 'webextension-polyfill';
 import { Message, MessageType } from '@/types/messages';
 import {
     onMessage,
+    sendMessage,
     sendMessageToTab,
     openSidePanel,
 } from '@/services/messaging';
 
 console.log('Worker initialized');
 
-// Listen for app connection to detect when it closes
+const appPorts = new Set<chrome.runtime.Port>();
+
 chrome.runtime.onConnect.addListener(port => {
     if (port.name === 'app') {
-        console.log('App connected');
-
+        appPorts.add(port);
         port.onDisconnect.addListener(async () => {
+            appPorts.delete(port);
             console.log('App disconnected, clearing highlights');
             try {
                 const tabs = await browser.tabs.query({
@@ -56,9 +58,32 @@ onMessage(async (message: Message, sender) => {
     switch (message.type) {
         case MessageType.SCAN_COMPLETE:
         case MessageType.SCAN_ERROR:
-            // Forward scan results from content scripts to app
-            // App will be listening for these messages
-            // No action needed here - message will be delivered to all listeners
+            if (sender.tab) {
+                const clone =
+                    message.type === MessageType.SCAN_COMPLETE
+                        ? {
+                              type: MessageType.SCAN_COMPLETE,
+                              data: {
+                                  result: message.data.result,
+                                  runId: message.data.runId,
+                              },
+                          }
+                        : {
+                              type: MessageType.SCAN_ERROR,
+                              data: {
+                                  error: message.data.error,
+                                  runId: message.data.runId,
+                              },
+                          };
+                appPorts.forEach(p => {
+                    try {
+                        p.postMessage(clone);
+                    } catch {
+                        appPorts.delete(p);
+                    }
+                });
+                await sendMessage(clone);
+            }
             break;
 
         case MessageType.SCAN_REQUEST:
@@ -115,7 +140,7 @@ onMessage(async (message: Message, sender) => {
             break;
 
         default:
-            console.warn('Unknown message type:', (message as any).type);
+            console.warn('Unknown message type:', message.type);
     }
 });
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useScanState, useScanDispatch } from '../../context/ScanContext';
+import { useScanState, useScanDispatch } from '../../context/useScanContext';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { Switch } from '../ui/Switch';
@@ -25,7 +25,7 @@ export function IssueDetail() {
                 data: { issueId: selectedIssue.id },
             }).catch(err => console.error('Failed to highlight issue:', err));
         }
-    }, [selectedIssue?.id, highlightsVisible]);
+    }, [selectedIssue, highlightsVisible]);
 
     const handleToggleHighlights = (visible: boolean) => {
         setHighlightsVisible(visible);

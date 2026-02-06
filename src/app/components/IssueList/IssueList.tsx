@@ -2,7 +2,7 @@ import {
     useScanState,
     useScanDispatch,
     useFilteredIssues,
-} from '../../context/ScanContext';
+} from '../../context/useScanContext';
 import { Issue, ImpactLevel } from '@/types/issue';
 import { cn } from '@/services/utils';
 import { AlertCircle, AlertTriangle, Info } from 'lucide-react';

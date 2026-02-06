@@ -5,7 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/Popover';
 import { Checkbox } from '../ui/Checkbox';
 import { Badge } from '../ui/Badge';
 import { Search, Filter, X, ChevronDown } from 'lucide-react';
-import { useScanState, useScanDispatch } from '../../context/ScanContext';
+import { useScanState, useScanDispatch } from '../../context/useScanContext';
 import { getFilterSummary } from '@/services/issueFilters';
 import { ImpactLevel, WCAGLevel, IssueStatus } from '@/types/issue';
 

@@ -16,7 +16,7 @@ import {
     useScanDispatch,
     useViewMode,
     useChecklist,
-} from '../../context/ScanContext';
+} from '../../context/useScanContext';
 import { sendMessage } from '@/services/messaging';
 import { MessageType } from '@/types/messages';
 import { downloadJSON } from '@/services/export';

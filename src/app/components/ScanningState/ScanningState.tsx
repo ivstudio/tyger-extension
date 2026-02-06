@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { ShieldCheck, Check } from 'lucide-react';
 
 interface ScanningStateProps {
@@ -27,6 +27,8 @@ export default function ScanningState({
     const [completedSteps, setCompletedSteps] = useState<Set<number>>(
         new Set()
     );
+    const onCompleteRef = useRef(onAnimationComplete);
+    onCompleteRef.current = onAnimationComplete;
 
     const getDisplayUrl = useCallback((url: string | null) => {
         if (!url) return 'Unknown page';
@@ -74,13 +76,13 @@ export default function ScanningState({
                 // Mark all steps as completed
                 setCompletedSteps(new Set(SCAN_STEPS.map((_, i) => i)));
                 setProgress(100);
-                // Small delay before transitioning to results
-                setTimeout(onAnimationComplete, 300);
+                // Small delay before transitioning to results (use ref so effect doesn't re-run)
+                setTimeout(() => onCompleteRef.current(), 300);
             }
         }, PROGRESS_INTERVAL);
 
         return () => clearInterval(interval);
-    }, [onAnimationComplete]);
+    }, []);
 
     const getStepIcon = (index: number) => {
         if (completedSteps.has(index)) {
@@ -92,16 +94,12 @@ export default function ScanningState({
         }
         if (index === currentStep) {
             return (
-                <div className="flex h-6 w-6 items-center justify-center">
-                    <div className="h-3 w-3 animate-pulse rounded-full bg-primary" />
+                <div className="flex h-6 w-6 animate-pulse items-center justify-center rounded-full bg-primary/30">
+                    <div className="h-3 w-3 rounded-full bg-primary" />
                 </div>
             );
         }
-        return (
-            <div className="flex h-6 w-6 items-center justify-center">
-                <div className="h-3 w-3 rounded-full bg-muted" />
-            </div>
-        );
+        return <div className="h-6 w-6 rounded-full bg-muted" />;
     };
 
     return (
@@ -177,7 +175,7 @@ export default function ScanningState({
             </div>
 
             {/* Fixed bottom section */}
-            <div className="fixed right-0 bottom-0 left-0 border-t border-border bg-background px-8 py-4">
+            <div className="fixed right-0 bottom-0 left-0 border-t border-border bg-background px-8 pt-4 pb-8">
                 <p className="text-center text-sm text-muted-foreground">
                     Analyzing accessibility issues...
                 </p>

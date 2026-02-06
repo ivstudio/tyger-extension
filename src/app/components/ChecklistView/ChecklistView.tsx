@@ -3,7 +3,7 @@ import {
     useChecklist,
     useScanDispatch,
     useScanState,
-} from '../../context/ScanContext';
+} from '../../context/useScanContext';
 import { Accordion } from '../ui/Accordion';
 import { ChecklistCategory } from './ChecklistCategory';
 import { ChecklistItemStatus, DEFAULT_CHECKLISTS } from '@/types/checklist';
