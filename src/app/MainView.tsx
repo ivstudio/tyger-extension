@@ -5,7 +5,6 @@ import {
     useAppConnection,
 } from '@/app/hooks';
 import { Header } from '@/app/components/Header';
-import { FilterBar } from '@/app/components/FilterBar';
 import { MainContent } from '@/app/components/MainContent';
 import { ScanningState } from '@/app/components/ScanningState';
 import { EmptyState } from '@/app/components/EmptyState';
@@ -51,7 +50,6 @@ export default function MainView() {
     return (
         <div className="flex h-screen flex-col bg-background">
             <Header />
-            {viewMode === 'issues' && <FilterBar />}
             <MainContent viewMode={viewMode} />
         </div>
     );
