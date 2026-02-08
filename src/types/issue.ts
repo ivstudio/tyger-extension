@@ -38,7 +38,6 @@ export interface Issue {
         role?: string;
         accessibleName?: string;
         focusable?: boolean;
-        contrastRatio?: number;
     };
     recommendations: Recommendation[];
     status: IssueStatus;
@@ -50,7 +49,8 @@ export interface Issue {
 export interface ScanResult {
     url: string;
     timestamp: number;
-    issues: Issue[];
+    issues: Issue[]; // Actual violations
+    incompleteChecks: Issue[]; // Checks that need manual review
     summary: {
         total: number;
         bySeverity: Record<ImpactLevel, number>;

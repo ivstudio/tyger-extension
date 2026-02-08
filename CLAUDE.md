@@ -6,6 +6,8 @@ Quick context for AI assistants working on this Chrome extension.
 
 Chrome extension for WCAG accessibility auditing using axe-core. React 19 side panel, TypeScript, Tailwind, Manifest V3.
 
+**Key Feature**: Separates axe-core violations (confirmed issues) from incomplete checks (requires manual validation) for accurate reporting.
+
 ## Critical Context
 
 ### 1. State Management Pattern
@@ -51,6 +53,24 @@ Type-safe messaging via `src/services/messaging.ts` using Zod schemas.
 Chrome storage with auto-pruning (max 10 scans/checklists per URL).
 Keys: `scan_results`, `manual_checklists`, `settings`.
 
+### 5. Scan Results Structure
+
+**IMPORTANT**: `ScanResult` has two separate arrays:
+
+```typescript
+{
+    issues: Issue[];           // Violations (confirmed issues)
+    incompleteChecks: Issue[]; // Needs manual verification
+    summary: {...}             // Only counts violations
+}
+```
+
+- **violations** → `issues[]` - actual accessibility problems
+- **incomplete** → `incompleteChecks[]` - axe couldn't fully test (e.g., color contrast with gradients)
+- Summary stats only count violations, not incomplete checks
+- Both can be highlighted on page and selected
+- Incomplete checks appear in Manual Validation checklist as "Automated Checks Requiring Review"
+
 ## Project-Specific Rules
 
 ### Code Conventions
@@ -72,7 +92,7 @@ Keys: `scan_results`, `manual_checklists`, `settings`.
 
 ### Testing
 
-- **70 tests** across scanner, storage, reducer (see `TESTING.md` for details)
+- **119 tests** across scanner, storage, reducer, components (see `TESTING.md` for details)
 - **Coverage**: 80% overall, 90%+ for critical files
 - **Run**: `pnpm test:run` or `pnpm test:coverage`
 - Pre-commit hooks auto-run ESLint + Prettier
@@ -98,6 +118,7 @@ Keys: `scan_results`, `manual_checklists`, `settings`.
 - `src/services/scanner.ts` - axe-core integration
 - `src/services/storage.ts` - Chrome storage wrapper
 - `src/app/context/scanReducer.ts` - State reducer
+- `src/config/ruleMetadata.ts` - Rule-specific notes and limitations
 
 **Documentation**:
 
@@ -119,6 +140,9 @@ pnpm type-check       # TypeScript check
 
 ## Recent Changes
 
+- **Feb 2026**: Separated violations from incomplete checks in scan results
+- **Feb 2026**: Incomplete checks integrated into Manual Validation checklist
+- **Feb 2026**: Click-to-highlight for incomplete check items
 - **Feb 2026**: Testing infrastructure (Vitest, ESLint 9, CI/CD, Husky)
 - **Jan 2026**: Manual checklists feature (Phase 6)
 - Added `hasScannedOnce` to ScanState (breaks tests if missing)

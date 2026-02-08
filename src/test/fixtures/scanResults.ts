@@ -10,6 +10,7 @@ export function createMockScanResult(
         url: 'https://example.com',
         timestamp: Date.now(),
         issues,
+        incompleteChecks: [],
         summary: {
             total: issues.length,
             bySeverity: {
@@ -48,6 +49,7 @@ export function createMockScanDiff(overrides?: Partial<ScanDiff>): ScanDiff {
 
 export const mockEmptyScanResult = createMockScanResult({
     issues: [],
+    incompleteChecks: [],
     summary: {
         total: 0,
         bySeverity: { critical: 0, serious: 0, moderate: 0, minor: 0 },

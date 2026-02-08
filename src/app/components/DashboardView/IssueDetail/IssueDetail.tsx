@@ -208,19 +208,6 @@ export function IssueDetail() {
                                     </dd>
                                 </>
                             )}
-                            {selectedIssue.context.contrastRatio && (
-                                <>
-                                    <dt className="text-muted-foreground">
-                                        Contrast Ratio:
-                                    </dt>
-                                    <dd>
-                                        {selectedIssue.context.contrastRatio.toFixed(
-                                            2
-                                        )}
-                                        :1
-                                    </dd>
-                                </>
-                            )}
                         </dl>
                     </div>
                 )}

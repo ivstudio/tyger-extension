@@ -23,11 +23,11 @@ export function ViewModeTabs() {
                 <TabsList>
                     <TabsTrigger value="issues" className="gap-2">
                         <AlertCircle className="h-4 w-4" />
-                        Issues
+                        Automated Checks
                     </TabsTrigger>
                     <TabsTrigger value="checklist" className="gap-2">
                         <ClipboardList className="h-4 w-4" />
-                        Checklist
+                        Manual Checks
                     </TabsTrigger>
                 </TabsList>
             </Tabs>

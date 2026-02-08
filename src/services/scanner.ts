@@ -1,6 +1,7 @@
 import axe, { AxeResults, Result } from 'axe-core';
 import { computeAccessibleName } from 'dom-accessibility-api';
 import { Issue, ScanResult, ImpactLevel, Recommendation } from '@/types/issue';
+import { getRuleNote } from '@/config/ruleMetadata';
 
 // Simple ID generator
 function generateId(): string {
@@ -35,7 +36,6 @@ export async function runScan(): Promise<ScanResult> {
                 values: [
                     'wcag2a',
                     'wcag2aa',
-                    'wcag2aaa',
                     'wcag21a',
                     'wcag21aa',
                     'wcag22aa',
@@ -46,20 +46,25 @@ export async function runScan(): Promise<ScanResult> {
             // Include all frames
             iframes: true,
         });
+        console.log('axe-core response:', results);
 
+        // Separate violations from incomplete checks
         const issues: Issue[] = [];
+        const incompleteChecks: Issue[] = [];
 
-        // Process violations
+        // Process violations (actual accessibility issues)
         for (const violation of results.violations) {
             issues.push(...processAxeResults(violation, 'violation'));
         }
 
-        // Process incomplete checks (needs manual review)
+        // Process incomplete checks (need manual review)
         for (const incomplete of results.incomplete) {
-            issues.push(...processAxeResults(incomplete, 'incomplete'));
+            incompleteChecks.push(
+                ...processAxeResults(incomplete, 'incomplete')
+            );
         }
 
-        // Calculate summary
+        // Calculate summary (only for violations, not incomplete)
         const summary = {
             total: issues.length,
             bySeverity: {
@@ -79,6 +84,7 @@ export async function runScan(): Promise<ScanResult> {
             url: window.location.href,
             timestamp: Date.now(),
             issues,
+            incompleteChecks,
             summary,
             scanConfig: {
                 axeVersion: results.testEngine.version,
@@ -123,6 +129,14 @@ function processAxeResults(
         // Generate recommendations
         const recommendations = generateRecommendations(result, node, element);
 
+        // Add notes for incomplete checks or rules with special metadata
+        let notes: string | undefined;
+        if (type === 'incomplete') {
+            notes = 'This issue requires manual verification';
+        } else {
+            notes = getRuleNote(result.id);
+        }
+
         const issue: Issue = {
             id: generateId(),
             source: 'axe',
@@ -145,10 +159,7 @@ function processAxeResults(
             status: 'open',
             tags: result.tags,
             timestamp: Date.now(),
-            notes:
-                type === 'incomplete'
-                    ? 'This issue requires manual verification'
-                    : undefined,
+            notes,
         };
 
         issues.push(issue);
@@ -177,47 +188,11 @@ function getElementContext(element: HTMLElement): Issue['context'] {
             element.tagName
         );
 
-    // Get contrast ratio if applicable (text elements)
-    let contrastRatio: number | undefined;
-    if (element.textContent?.trim()) {
-        const computedStyle = window.getComputedStyle(element);
-        const color = computedStyle.color;
-        const backgroundColor = computedStyle.backgroundColor;
-
-        if (color && backgroundColor) {
-            contrastRatio = calculateContrastRatio(color, backgroundColor);
-        }
-    }
-
     return {
         role,
         accessibleName,
         focusable,
-        contrastRatio,
     };
-}
-
-/**
- * Calculate WCAG contrast ratio between two colors
- */
-function calculateContrastRatio(color1: string, color2: string): number {
-    const getLuminance = (color: string): number => {
-        const rgb = color.match(/\d+/g)?.map(Number) || [0, 0, 0];
-        const [r, g, b] = rgb.map(val => {
-            const sRGB = val / 255;
-            return sRGB <= 0.03928
-                ? sRGB / 12.92
-                : Math.pow((sRGB + 0.055) / 1.055, 2.4);
-        });
-        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-    };
-
-    const lum1 = getLuminance(color1);
-    const lum2 = getLuminance(color2);
-    const lighter = Math.max(lum1, lum2);
-    const darker = Math.min(lum1, lum2);
-
-    return (lighter + 0.05) / (darker + 0.05);
 }
 
 /**

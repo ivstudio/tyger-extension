@@ -37,11 +37,12 @@ Current status of the Accessibility Audit Chrome Extension implementation.
 
 - [x] axe-core integration wrapper
 - [x] Result transformation to Issue format
+- [x] Separation of violations and incomplete checks
 - [x] WCAG level detection
 - [x] Element context extraction (role, accessible name, focusable)
-- [x] Contrast ratio calculation
 - [x] Role-specific recommendation generation
 - [x] Code example generation for common fixes
+- [x] Rule metadata system for known limitations (e.g., color-contrast false positives)
 
 ### Extension Core
 
@@ -117,6 +118,8 @@ Current status of the Accessibility Audit Chrome Extension implementation.
 - [x] Reset checklist functionality
 - [x] Progress tracking per category
 - [x] Overall completion badge
+- [x] Automated incomplete checks integration
+- [x] Click to highlight incomplete check elements on page
 
 ## 🚧 Next Steps (Phase 7)
 

@@ -14,9 +14,14 @@ interface ChecklistItemProps {
         status: ChecklistItemStatus,
         notes?: string
     ) => void;
+    onClick?: () => void;
 }
 
-export function ChecklistItem({ item, onStatusChange }: ChecklistItemProps) {
+export function ChecklistItem({
+    item,
+    onStatusChange,
+    onClick,
+}: ChecklistItemProps) {
     const [notes, setNotes] = useState(item.notes || '');
     const [showNotes, setShowNotes] = useState(false);
 
@@ -59,7 +64,13 @@ export function ChecklistItem({ item, onStatusChange }: ChecklistItemProps) {
         <div className="border-b border-border py-3 last:border-0">
             <div className="space-y-2">
                 <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1">
+                    <div
+                        className={cn(
+                            'flex-1',
+                            onClick && 'cursor-pointer hover:text-blue-600'
+                        )}
+                        onClick={onClick}
+                    >
                         <h4 className="text-sm font-medium">{item.title}</h4>
                         <p className="mt-1 text-xs text-muted-foreground">
                             {item.description}

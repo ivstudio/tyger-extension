@@ -18,11 +18,13 @@ interface ChecklistCategoryProps {
         status: ChecklistItemStatus,
         notes?: string
     ) => void;
+    onItemClick?: (categoryId: string, itemId: string) => void;
 }
 
 export function ChecklistCategory({
     category,
     onItemStatusChange,
+    onItemClick,
 }: ChecklistCategoryProps) {
     const totalItems = category.items.length;
     const completedItems = category.items.filter(
@@ -98,6 +100,11 @@ export function ChecklistCategory({
                                     status,
                                     notes
                                 )
+                            }
+                            onClick={
+                                onItemClick
+                                    ? () => onItemClick(category.id, item.id)
+                                    : undefined
                             }
                         />
                     ))}
