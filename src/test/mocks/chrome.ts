@@ -55,7 +55,7 @@ export const mockRuntime = {
 
         const port = {
             name: connectInfo?.name,
-            postMessage: vi.fn((message: any) => {
+            postMessage: vi.fn((_message: any) => {
                 // Simulate message being sent
             }),
             onMessage: {
