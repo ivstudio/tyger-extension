@@ -85,6 +85,7 @@ export function scanReducer(state: ScanState, action: ScanAction): ScanState {
             return {
                 ...state,
                 viewMode: action.payload,
+                selectedIssue: null,
             };
 
         case 'LOAD_CHECKLIST':

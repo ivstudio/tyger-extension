@@ -36,8 +36,22 @@ describe('ChecklistView - Incomplete Checks Integration Logic', () => {
         );
 
         if (existingIndex >= 0) {
-            // Update existing category
-            categories[existingIndex] = incompleteChecksCategory;
+            // Merge fresh scan data with existing user status changes
+            const existingCategory = categories[existingIndex];
+            const mergedItems = incompleteChecksCategory.items.map(
+                freshItem => {
+                    const existingItem = existingCategory.items.find(
+                        item => item.id === freshItem.id
+                    );
+                    // Preserve user's status and notes if item already exists
+                    return existingItem || freshItem;
+                }
+            );
+
+            categories[existingIndex] = {
+                ...incompleteChecksCategory,
+                items: mergedItems,
+            };
         } else {
             // Add new category at the beginning
             categories.unshift(incompleteChecksCategory);
@@ -225,5 +239,84 @@ describe('ChecklistView - Incomplete Checks Integration Logic', () => {
         expect(automatedCategory.items[0].notes).toBe(
             'This issue requires manual verification'
         );
+    });
+
+    it('should preserve user status changes when merging with fresh scan data', () => {
+        // Simulate existing category with user-modified status
+        const existingCategory: ChecklistCategory = {
+            id: 'automated-incomplete',
+            title: 'Automated Checks Requiring Review',
+            description: 'Issues flagged by automated scanning',
+            items: [
+                {
+                    id: 'check-1',
+                    title: 'First check',
+                    description: 'First',
+                    status: 'pass', // User marked as pass
+                    notes: 'Verified manually',
+                },
+                {
+                    id: 'check-2',
+                    title: 'Second check',
+                    description: 'Second',
+                    status: 'fail', // User marked as fail
+                    notes: 'Issue confirmed',
+                },
+            ],
+        };
+
+        const categoriesWithExisting = [
+            existingCategory,
+            ...DEFAULT_CHECKLISTS,
+        ];
+
+        // Fresh incomplete checks from new scan (same items, but status should be pending)
+        const freshIncompleteChecks: Issue[] = [
+            {
+                id: 'check-1',
+                source: 'axe',
+                ruleId: 'rule-1',
+                title: 'First check',
+                description: 'First',
+                impact: 'serious',
+                confidence: 'medium',
+                wcag: { level: 'AA', criteria: [] },
+                node: { selector: '.a', snippet: '' },
+                context: {},
+                recommendations: [],
+                status: 'open',
+                tags: [],
+                timestamp: Date.now(),
+            },
+            {
+                id: 'check-2',
+                source: 'axe',
+                ruleId: 'rule-2',
+                title: 'Second check',
+                description: 'Second',
+                impact: 'moderate',
+                confidence: 'medium',
+                wcag: { level: 'A', criteria: [] },
+                node: { selector: '.b', snippet: '' },
+                context: {},
+                recommendations: [],
+                status: 'open',
+                tags: [],
+                timestamp: Date.now(),
+            },
+        ];
+
+        const result = mergeIncompleteChecksWithCategories(
+            categoriesWithExisting,
+            freshIncompleteChecks
+        );
+
+        const automatedCategory = result[0];
+
+        // Should preserve user's status changes
+        expect(automatedCategory.items[0].status).toBe('pass');
+        expect(automatedCategory.items[0].notes).toBe('Verified manually');
+        expect(automatedCategory.items[1].status).toBe('fail');
+        expect(automatedCategory.items[1].notes).toBe('Issue confirmed');
     });
 });

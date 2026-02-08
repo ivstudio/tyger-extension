@@ -5,12 +5,20 @@ import {
     useScanDispatch,
     type ViewMode,
 } from '@/app/context/useScanContext';
+import { sendMessage } from '@/services/messaging';
+import { MessageType } from '@/types/messages';
 
 export function ViewModeTabs() {
     const viewMode = useViewMode();
     const dispatch = useScanDispatch();
 
     const handleValueChange = (value: string) => {
+        // Clear highlights on page
+        sendMessage({
+            type: MessageType.CLEAR_HIGHLIGHTS,
+        });
+
+        // Switch view mode (reducer automatically clears selected issue)
         dispatch({
             type: 'SET_VIEW_MODE',
             payload: value as ViewMode,

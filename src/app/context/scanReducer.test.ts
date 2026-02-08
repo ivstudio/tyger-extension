@@ -353,6 +353,22 @@ describe('scanReducer', () => {
 
             expect(nextState.viewMode).toBe('checklist');
         });
+
+        it('should clear selected issue when switching views', () => {
+            const issue = createMockIssue();
+            const stateWithSelectedIssue = {
+                ...initialState,
+                selectedIssue: issue,
+            };
+
+            const nextState = scanReducer(stateWithSelectedIssue, {
+                type: 'SET_VIEW_MODE',
+                payload: 'checklist',
+            });
+
+            expect(nextState.selectedIssue).toBeNull();
+            expect(nextState.viewMode).toBe('checklist');
+        });
     });
 
     describe('LOAD_CHECKLIST', () => {
