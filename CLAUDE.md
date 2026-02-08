@@ -48,28 +48,78 @@ Worker (background) ←→ Side Panel (React) ←→ Content Script (injected)
 
 Type-safe messaging via `src/services/messaging.ts` using Zod schemas.
 
-### 4. Storage Pattern
+### 4. Highlight Clearing Mechanism
+
+**CRITICAL**: Overlay highlights (`accessibility-audit-overlay` class) are managed centrally via `useClearHighlights` hook.
+
+**Architecture**:
+
+```
+useClearHighlights (MainContent)
+  ↓ watches state changes
+  ↓ sends CLEAR_HIGHLIGHTS message
+Content Script (overlay.ts)
+  ↓ removes all overlay elements
+```
+
+**Auto-clears highlights when**:
+
+- Scan starts (`isScanning` → true)
+- URL changes (new page scanned)
+- View mode switches (Automated ↔ Manual Checks)
+
+**Location**: `src/app/hooks/useClearHighlights.ts`
+
+- Used once in `MainContent.tsx`
+- Centralized, declarative approach
+- Do NOT add manual `sendMessage(CLEAR_HIGHLIGHTS)` calls in components
+- Exception: Explicit user actions (e.g., Reset button) can manually clear
+
+**When adding new features**:
+
+1. Do NOT manually send CLEAR_HIGHLIGHTS messages
+2. Let the hook handle state-driven clearing
+3. Only add manual clears for explicit user actions that don't change tracked state
+4. If new triggers needed, add to `useClearHighlights.ts` (one place!)
+
+**Test fixtures**:
+
+- Use `createMockScanResult()` from `@/test/fixtures/scanResults`
+- NEVER manually create ScanResult objects in tests
+- Structure: `{ issues[], incompleteChecks[], summary: { total, bySeverity, byWCAG } }`
+
+### 5. Storage Pattern
 
 Chrome storage with auto-pruning (max 10 scans/checklists per URL).
 Keys: `scan_results`, `manual_checklists`, `settings`.
 
-### 5. Scan Results Structure
+### 6. Scan Results Structure
 
 **IMPORTANT**: `ScanResult` has two separate arrays:
 
 ```typescript
 {
+    url: string;
+    timestamp: number;
     issues: Issue[];           // Violations (confirmed issues)
     incompleteChecks: Issue[]; // Needs manual verification
-    summary: {...}             // Only counts violations
+    summary: {
+        total: number;                          // Count of violations only
+        bySeverity: Record<ImpactLevel, number>;
+        byWCAG: Record<WCAGLevel, number>;
+    };
 }
 ```
+
+**Key points**:
 
 - **violations** → `issues[]` - actual accessibility problems
 - **incomplete** → `incompleteChecks[]` - axe couldn't fully test (e.g., color contrast with gradients)
 - Summary stats only count violations, not incomplete checks
 - Both can be highlighted on page and selected
 - Incomplete checks appear in Manual Validation checklist as "Automated Checks Requiring Review"
+
+**In tests**: Use `createMockScanResult()` from `@/test/fixtures/scanResults` - never manually create ScanResult objects.
 
 ## Project-Specific Rules
 
@@ -92,10 +142,11 @@ Keys: `scan_results`, `manual_checklists`, `settings`.
 
 ### Testing
 
-- **119 tests** across scanner, storage, reducer, components (see `TESTING.md` for details)
+- **139 tests** across scanner, storage, reducer, components, hooks (see `TESTING.md` for details)
 - **Coverage**: 80% overall, 90%+ for critical files
 - **Run**: `pnpm test:run` or `pnpm test:coverage`
 - Pre-commit hooks auto-run ESLint + Prettier
+- **Test fixtures**: Use helpers from `src/test/fixtures/` (scanResults, issues, checklists)
 
 ### Common Issues
 
@@ -140,6 +191,8 @@ pnpm type-check       # TypeScript check
 
 ## Recent Changes
 
+- **Feb 2026**: Centralized highlight clearing via `useClearHighlights` hook
+- **Feb 2026**: Fixed incomplete check status persistence in manual validation
 - **Feb 2026**: Separated violations from incomplete checks in scan results
 - **Feb 2026**: Incomplete checks integrated into Manual Validation checklist
 - **Feb 2026**: Click-to-highlight for incomplete check items

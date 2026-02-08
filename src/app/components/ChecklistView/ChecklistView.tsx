@@ -146,6 +146,17 @@ export function ChecklistView() {
     const handleResetChecklist = async () => {
         if (!currentScan) return;
 
+        // Clear selected issue
+        dispatch({
+            type: 'SELECT_ISSUE',
+            payload: null,
+        });
+
+        // Clear highlights on page (explicit user action, not handled by useClearHighlights)
+        sendMessage({
+            type: MessageType.CLEAR_HIGHLIGHTS,
+        });
+
         const resetChecklist = {
             url: currentScan.url,
             timestamp: Date.now(),
