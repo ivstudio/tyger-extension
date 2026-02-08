@@ -3,7 +3,7 @@ import { useScanState } from '@/app/context/useScanContext';
 function getDisplayUrl(url: string): string {
     try {
         const urlObj = new URL(url);
-        return urlObj.hostname + urlObj.pathname;
+        return urlObj.host + urlObj.pathname;
     } catch {
         return url;
     }
