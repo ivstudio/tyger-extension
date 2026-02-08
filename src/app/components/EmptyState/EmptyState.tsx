@@ -1,10 +1,10 @@
 import { Button } from '../ui/Button';
 import { ShieldCheck, Zap, Eye, Keyboard, FileText } from 'lucide-react';
+import { PageToScanUrl } from './PageToScanUrl';
 
 interface EmptyStateProps {
     onScan: () => void;
     isScanning: boolean;
-    currentUrl: string | null;
 }
 
 const SCAN_FEATURES = [
@@ -14,21 +14,7 @@ const SCAN_FEATURES = [
     { icon: ShieldCheck, label: 'WCAG Compliance' },
 ] as const;
 
-export default function EmptyState({
-    onScan,
-    isScanning,
-    currentUrl,
-}: EmptyStateProps) {
-    const getDisplayUrl = (url: string | null) => {
-        if (!url) return null;
-        try {
-            const urlObj = new URL(url);
-            return urlObj.hostname + urlObj.pathname;
-        } catch {
-            return url;
-        }
-    };
-
+export default function EmptyState({ onScan, isScanning }: EmptyStateProps) {
     return (
         <div className="flex h-full flex-col">
             {/* Main content area */}
@@ -52,20 +38,7 @@ export default function EmptyState({
                         compliance.
                     </p>
 
-                    {/* Page to scan section */}
-                    {currentUrl && (
-                        <div className="mb-8 w-full text-left">
-                            <p className="mb-2 text-xs font-medium text-muted-foreground">
-                                Page to scan
-                            </p>
-                            <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/50 px-4 py-3">
-                                <span className="h-2 w-2 rounded-full bg-green-500" />
-                                <p className="font-mono text-sm break-all text-foreground">
-                                    {getDisplayUrl(currentUrl)}
-                                </p>
-                            </div>
-                        </div>
-                    )}
+                    <PageToScanUrl />
 
                     {/* What we scan for section */}
                     <div className="w-full text-left">

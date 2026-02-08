@@ -10,6 +10,8 @@ export const MessageType = {
     INSPECT_ELEMENT: 'INSPECT_ELEMENT',
     UPDATE_ISSUE_STATUS: 'UPDATE_ISSUE_STATUS',
     OPEN_SIDEPANEL: 'OPEN_SIDEPANEL',
+    GET_CURRENT_URL: 'GET_CURRENT_URL',
+    CURRENT_URL_UPDATE: 'CURRENT_URL_UPDATE',
 } as const;
 
 export type MessageTypeKeys = keyof typeof MessageType;
@@ -83,6 +85,15 @@ export const OpenSidePanelSchema = z.object({
     type: z.literal(MessageType.OPEN_SIDEPANEL),
 });
 
+export const GetCurrentUrlSchema = z.object({
+    type: z.literal(MessageType.GET_CURRENT_URL),
+});
+
+export const CurrentUrlUpdateSchema = z.object({
+    type: z.literal(MessageType.CURRENT_URL_UPDATE),
+    data: z.object({ url: z.string() }),
+});
+
 // Union type for all messages
 export const MessageSchema = z.discriminatedUnion('type', [
     ScanRequestSchema,
@@ -94,6 +105,8 @@ export const MessageSchema = z.discriminatedUnion('type', [
     InspectElementSchema,
     UpdateIssueStatusSchema,
     OpenSidePanelSchema,
+    GetCurrentUrlSchema,
+    CurrentUrlUpdateSchema,
 ]);
 
 export type Message = z.infer<typeof MessageSchema>;
@@ -106,3 +119,5 @@ export type TogglePickerMessage = z.infer<typeof TogglePickerSchema>;
 export type InspectElementMessage = z.infer<typeof InspectElementSchema>;
 export type UpdateIssueStatusMessage = z.infer<typeof UpdateIssueStatusSchema>;
 export type OpenSidePanelMessage = z.infer<typeof OpenSidePanelSchema>;
+export type GetCurrentUrlMessage = z.infer<typeof GetCurrentUrlSchema>;
+export type CurrentUrlUpdateMessage = z.infer<typeof CurrentUrlUpdateSchema>;
