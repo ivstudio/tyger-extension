@@ -7,8 +7,6 @@ import {
     openSidePanel,
 } from '@/services/messaging';
 
-console.log('Worker initialized');
-
 const appPorts = new Set<chrome.runtime.Port>();
 
 function sendCurrentUrlToApp(url: string): void {
