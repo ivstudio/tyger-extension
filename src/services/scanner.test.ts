@@ -129,7 +129,6 @@ describe('scanner', () => {
                     values: [
                         'wcag2a',
                         'wcag2aa',
-                        'wcag2aaa',
                         'wcag21a',
                         'wcag21aa',
                         'wcag22aa',
@@ -155,8 +154,9 @@ describe('scanner', () => {
         it('should process violations correctly', async () => {
             const result = await scanner.runScan();
 
-            // Should have 2 issues (1 violation + 1 incomplete)
-            expect(result.issues).toHaveLength(2);
+            // Should have 1 violation and 1 incomplete check
+            expect(result.issues).toHaveLength(1);
+            expect(result.incompleteChecks).toHaveLength(1);
 
             // Check violation issue
             const violation = result.issues.find(
@@ -187,8 +187,8 @@ describe('scanner', () => {
         it('should process incomplete checks correctly', async () => {
             const result = await scanner.runScan();
 
-            // Check incomplete issue
-            const incomplete = result.issues.find(
+            // Check incomplete check (in separate array)
+            const incomplete = result.incompleteChecks.find(
                 i => i.ruleId === 'image-alt'
             );
             expect(incomplete).toBeDefined();
@@ -206,16 +206,17 @@ describe('scanner', () => {
         it('should calculate summary correctly', async () => {
             const result = await scanner.runScan();
 
+            // Summary only counts violations, not incomplete checks
             expect(result.summary).toEqual({
-                total: 2,
+                total: 1,
                 bySeverity: {
-                    critical: 1, // image-alt
+                    critical: 0,
                     serious: 1, // color-contrast
                     moderate: 0,
                     minor: 0,
                 },
                 byWCAG: {
-                    A: 1, // image-alt (wcag2a)
+                    A: 0,
                     AA: 1, // color-contrast (wcag2aa)
                     AAA: 0,
                 },

@@ -1,21 +1,73 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
     useChecklist,
     useScanDispatch,
     useScanState,
+    useIncompleteChecks,
 } from '../../context/useScanContext';
 import { Accordion } from '../ui/Accordion';
 import { ChecklistCategory } from './ChecklistCategory';
-import { ChecklistItemStatus, DEFAULT_CHECKLISTS } from '@/types/checklist';
+import {
+    ChecklistItemStatus,
+    DEFAULT_CHECKLISTS,
+    ChecklistCategory as ChecklistCategoryType,
+} from '@/types/checklist';
 import { getLatestChecklist, saveChecklist } from '@/services/storage';
 import { Button } from '../ui/Button';
 import { RotateCcw, CheckCircle } from 'lucide-react';
 import { Badge } from '../ui/Badge';
+import { sendMessage } from '@/services/messaging';
+import { MessageType } from '@/types/messages';
 
 export function ChecklistView() {
     const checklist = useChecklist();
     const dispatch = useScanDispatch();
     const { currentScan } = useScanState();
+    const incompleteChecks = useIncompleteChecks();
+
+    // Create dynamic category for incomplete checks from scan
+    const incompleteChecksCategory: ChecklistCategoryType | null =
+        useMemo(() => {
+            if (!incompleteChecks || incompleteChecks.length === 0) return null;
+
+            return {
+                id: 'automated-incomplete',
+                title: 'Automated Checks Requiring Review',
+                description:
+                    'Issues flagged by automated scanning that need manual verification',
+                items: incompleteChecks.map(issue => ({
+                    id: issue.id,
+                    title: issue.title,
+                    description: issue.description,
+                    status: 'pending' as ChecklistItemStatus,
+                    notes: issue.notes,
+                })),
+            };
+        }, [incompleteChecks]);
+
+    // Merge incomplete checks category with checklist categories for display
+    const displayCategories = useMemo(() => {
+        if (!checklist) return [];
+
+        const categories = [...checklist.categories];
+
+        // Add or update incomplete checks category dynamically
+        if (incompleteChecksCategory) {
+            const existingIndex = categories.findIndex(
+                cat => cat.id === incompleteChecksCategory.id
+            );
+
+            if (existingIndex >= 0) {
+                // Update existing category with fresh data from scan
+                categories[existingIndex] = incompleteChecksCategory;
+            } else {
+                // Add new category at the beginning
+                categories.unshift(incompleteChecksCategory);
+            }
+        }
+
+        return categories;
+    }, [checklist, incompleteChecksCategory]);
 
     useEffect(() => {
         const loadChecklist = async () => {
@@ -31,6 +83,7 @@ export function ChecklistView() {
                 });
             } else {
                 // Create new checklist from defaults
+                // Incomplete checks are added dynamically via displayCategories
                 const newChecklist = {
                     url: currentScan.url,
                     timestamp: Date.now(),
@@ -53,6 +106,27 @@ export function ChecklistView() {
         dispatch({
             type: 'UPDATE_CHECKLIST_ITEM',
             payload: { categoryId, itemId, status, notes },
+        });
+    };
+
+    const handleItemClick = (categoryId: string, itemId: string) => {
+        // Only handle clicks for automated-incomplete category
+        if (categoryId !== 'automated-incomplete') return;
+
+        // Find the corresponding issue from incomplete checks
+        const issue = incompleteChecks.find(i => i.id === itemId);
+        if (!issue) return;
+
+        // Select the issue in state
+        dispatch({
+            type: 'SELECT_ISSUE',
+            payload: issue,
+        });
+
+        // Send message to highlight the issue on the page
+        sendMessage({
+            type: MessageType.HIGHLIGHT_ISSUE,
+            data: { issueId: issue.id },
         });
     };
 
@@ -103,21 +177,21 @@ export function ChecklistView() {
         );
     }
 
-    const totalItems = checklist.categories.reduce(
+    const totalItems = displayCategories.reduce(
         (sum, cat) => sum + cat.items.length,
         0
     );
-    const completedItems = checklist.categories.reduce(
+    const completedItems = displayCategories.reduce(
         (sum, cat) =>
             sum + cat.items.filter(item => item.status !== 'pending').length,
         0
     );
-    const passedItems = checklist.categories.reduce(
+    const passedItems = displayCategories.reduce(
         (sum, cat) =>
             sum + cat.items.filter(item => item.status === 'pass').length,
         0
     );
-    const failedItems = checklist.categories.reduce(
+    const failedItems = displayCategories.reduce(
         (sum, cat) =>
             sum + cat.items.filter(item => item.status === 'fail').length,
         0
@@ -187,11 +261,12 @@ export function ChecklistView() {
             {/* Checklist Categories */}
             <div className="flex-1 overflow-y-auto p-4">
                 <Accordion type="multiple" className="space-y-2">
-                    {checklist.categories.map(category => (
+                    {displayCategories.map(category => (
                         <ChecklistCategory
                             key={category.id}
                             category={category}
                             onItemStatusChange={handleItemStatusChange}
+                            onItemClick={handleItemClick}
                         />
                     ))}
                 </Accordion>

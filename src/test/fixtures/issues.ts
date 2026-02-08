@@ -33,7 +33,6 @@ export function createMockIssue(overrides?: Partial<Issue>): Issue {
             role: 'button',
             accessibleName: 'Submit',
             focusable: true,
-            contrastRatio: 2.5,
         },
         recommendations: [
             {

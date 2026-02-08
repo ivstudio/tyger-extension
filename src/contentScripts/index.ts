@@ -80,8 +80,9 @@ async function handleScanRequest(message: ScanRequestMessage): Promise<void> {
 
     isScanning = true;
 
-    // Clear existing highlights when starting new scan
+    // Clear existing highlights and disable picker before scan
     clearAllHighlights();
+    disablePicker();
 
     try {
         console.log('Starting accessibility scan...');
@@ -131,7 +132,11 @@ function handleHighlightIssue(issueId: string): void {
         return;
     }
 
-    const issue = currentScanResult.issues.find(i => i.id === issueId);
+    // Check both violations and incomplete checks
+    const issue =
+        currentScanResult.issues.find(i => i.id === issueId) ||
+        currentScanResult.incompleteChecks.find(i => i.id === issueId);
+
     if (!issue) {
         console.warn('Issue not found:', issueId);
         return;

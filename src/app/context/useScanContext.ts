@@ -28,6 +28,11 @@ export function useFilteredIssues(): Issue[] {
     return currentScan ? filterIssues(currentScan.issues, filters) : [];
 }
 
+export function useIncompleteChecks(): Issue[] {
+    const { currentScan } = useScanState();
+    return currentScan?.incompleteChecks || [];
+}
+
 export function useChecklist(): ManualChecklist | null {
     const { currentChecklist } = useScanState();
     return currentChecklist;
