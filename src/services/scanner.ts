@@ -79,7 +79,7 @@ export async function runScan(): Promise<ScanResult> {
                 AAA: issues.filter(i => i.wcag.level === 'AAA').length,
             },
         };
-
+        console.log('axe scan result (transformed response):', results);
         return {
             url: window.location.href,
             timestamp: Date.now(),
