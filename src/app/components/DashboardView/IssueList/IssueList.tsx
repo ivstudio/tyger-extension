@@ -2,7 +2,7 @@ import {
     useScanState,
     useScanDispatch,
     useFilteredIssues,
-} from '../../context/useScanContext';
+} from '@/app/context/useScanContext';
 import { Issue, ImpactLevel } from '@/types/issue';
 import { cn } from '@/services/utils';
 import { AlertCircle, AlertTriangle, Info } from 'lucide-react';
@@ -46,7 +46,7 @@ export function IssueList() {
 
     // Group issues by severity
     const groupedIssues = issues.reduce(
-        (acc, issue) => {
+        (acc: Record<ImpactLevel, Issue[]>, issue: Issue) => {
             if (!acc[issue.impact]) {
                 acc[issue.impact] = [];
             }
@@ -83,7 +83,7 @@ export function IssueList() {
                             <Icon className="h-4 w-4" />
                             {config.label} ({severityIssues.length})
                         </div>
-                        {severityIssues.map(issue => (
+                        {severityIssues.map((issue: Issue) => (
                             <IssueListItem
                                 key={issue.id}
                                 issue={issue}

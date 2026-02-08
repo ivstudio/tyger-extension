@@ -100,7 +100,6 @@ Current status of the Accessibility Audit Chrome Extension implementation.
 - [x] Search box for finding issues by title/rule ID
 - [x] Clear all filters button
 - [x] Issue count badges showing filtered results
-- [x] FilterBar component with multi-select dropdowns
 - [x] Real-time search and filtering
 - [ ] Filter persistence across sessions (planned for v1.1)
 
@@ -124,9 +123,9 @@ Current status of the Accessibility Audit Chrome Extension implementation.
 ### Phase 7: Polish & Additional Features
 
 - [ ] Settings page
-  - [ ] Analytics opt-in toggle
-  - [ ] Clear all data button
-  - [ ] About section with version info
+    - [ ] Analytics opt-in toggle
+    - [ ] Clear all data button
+    - [ ] About section with version info
 - [ ] First-run experience / onboarding
 - [ ] Analytics implementation (opt-in)
 - [ ] Re-scan button with diff visualization

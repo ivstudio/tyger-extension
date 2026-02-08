@@ -128,12 +128,12 @@ describe('scanReducer', () => {
 
 ```typescript
 import { render, screen } from '@/test/utils/renderWithProviders';
-import { FilterBar } from './FilterBar';
+import { Header } from '@/app/components/Header';
 
-describe('FilterBar', () => {
-  it('should render all filter controls', () => {
-    render(<FilterBar />);
-    expect(screen.getByLabelText('Search')).toBeInTheDocument();
+describe('Header', () => {
+  it('should render header content', () => {
+    render(<Header />);
+    expect(screen.getByRole('banner')).toBeInTheDocument();
   });
 });
 ```

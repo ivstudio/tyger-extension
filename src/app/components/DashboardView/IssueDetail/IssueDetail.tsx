@@ -1,11 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useScanState, useScanDispatch } from '../../context/useScanContext';
-import { Button } from '../ui/Button';
-import { Badge } from '../ui/Badge';
-import { Switch } from '../ui/Switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/Tabs';
+import { useScanState, useScanDispatch } from '@/app/context/useScanContext';
+import { Button } from '@/app/components/ui/Button';
+import { Badge } from '@/app/components/ui/Badge';
+import { Switch } from '@/app/components/ui/Switch';
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from '@/app/components/ui/Tabs';
 import { Code, ExternalLink, CheckCircle, XCircle, Eye } from 'lucide-react';
-import { IssueStatus } from '@/types/issue';
+import type { IssueStatus, Recommendation } from '@/types/issue';
 import { updateIssueStatus } from '@/services/storage';
 import { sendMessage } from '@/services/messaging';
 import { MessageType } from '@/types/messages';
@@ -66,13 +71,13 @@ export function IssueDetail() {
     };
 
     const devRecommendations = selectedIssue.recommendations.filter(
-        r => r.role === 'developer'
+        (r: Recommendation) => r.role === 'developer'
     );
     const qaRecommendations = selectedIssue.recommendations.filter(
-        r => r.role === 'qa'
+        (r: Recommendation) => r.role === 'qa'
     );
     const designRecommendations = selectedIssue.recommendations.filter(
-        r => r.role === 'designer'
+        (r: Recommendation) => r.role === 'designer'
     );
 
     return (
@@ -114,11 +119,13 @@ export function IssueDetail() {
                         WCAG Criteria:
                     </span>
                     <div className="mt-1 flex flex-wrap gap-1">
-                        {selectedIssue.wcag.criteria.map(criterion => (
-                            <Badge key={criterion} variant="secondary">
-                                {criterion}
-                            </Badge>
-                        ))}
+                        {selectedIssue.wcag.criteria.map(
+                            (criterion: string) => (
+                                <Badge key={criterion} variant="secondary">
+                                    {criterion}
+                                </Badge>
+                            )
+                        )}
                     </div>
                 </div>
             </div>
@@ -235,25 +242,37 @@ export function IssueDetail() {
                 </TabsList>
 
                 <TabsContent value="developer" className="space-y-3">
-                    {devRecommendations.map((rec, idx) => (
-                        <RecommendationCard key={idx} recommendation={rec} />
-                    ))}
-                </TabsContent>
-
-                <TabsContent value="qa" className="space-y-3">
-                    {qaRecommendations.map((rec, idx) => (
-                        <RecommendationCard key={idx} recommendation={rec} />
-                    ))}
-                </TabsContent>
-
-                {designRecommendations.length > 0 && (
-                    <TabsContent value="designer" className="space-y-3">
-                        {designRecommendations.map((rec, idx) => (
+                    {devRecommendations.map(
+                        (rec: Recommendation, idx: number) => (
                             <RecommendationCard
                                 key={idx}
                                 recommendation={rec}
                             />
-                        ))}
+                        )
+                    )}
+                </TabsContent>
+
+                <TabsContent value="qa" className="space-y-3">
+                    {qaRecommendations.map(
+                        (rec: Recommendation, idx: number) => (
+                            <RecommendationCard
+                                key={idx}
+                                recommendation={rec}
+                            />
+                        )
+                    )}
+                </TabsContent>
+
+                {designRecommendations.length > 0 && (
+                    <TabsContent value="designer" className="space-y-3">
+                        {designRecommendations.map(
+                            (rec: Recommendation, idx: number) => (
+                                <RecommendationCard
+                                    key={idx}
+                                    recommendation={rec}
+                                />
+                            )
+                        )}
                     </TabsContent>
                 )}
             </Tabs>

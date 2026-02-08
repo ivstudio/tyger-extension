@@ -1,5 +1,5 @@
 import { Recommendation } from '@/types/issue';
-import { Badge } from '../ui/Badge';
+import { Badge } from '@/app/components/ui/Badge';
 
 interface RecommendationCardProps {
     recommendation: Recommendation;

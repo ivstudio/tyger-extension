@@ -4,7 +4,6 @@ import {
     useTabUrlSync,
     useAppConnection,
 } from '@/app/hooks';
-import { Header } from '@/app/components/Header';
 import { MainContent } from '@/app/components/MainContent';
 import { ScanningState } from '@/app/components/ScanningState';
 import { EmptyState } from '@/app/components/EmptyState';
@@ -21,13 +20,7 @@ export default function MainView() {
     useAppConnection();
 
     if (!hasScannedOnce && !isAnimating) {
-        return (
-            <EmptyState
-                onScan={handleScan}
-                isScanning={isScanning}
-                currentUrl={currentUrl}
-            />
-        );
+        return <EmptyState onScan={handleScan} isScanning={isScanning} />;
     }
 
     if (isAnimating) {
@@ -39,18 +32,9 @@ export default function MainView() {
         );
     }
 
-    if (
-        viewMode === 'issues' &&
-        currentScan &&
-        currentScan.issues.length === 0
-    ) {
+    if (viewMode === 'issues' && currentScan?.issues.length === 0) {
         return <ZeroResultsState />;
     }
 
-    return (
-        <div className="flex h-screen flex-col bg-background">
-            <Header />
-            <MainContent viewMode={viewMode} />
-        </div>
-    );
+    return <MainContent />;
 }

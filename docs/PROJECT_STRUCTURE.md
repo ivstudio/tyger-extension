@@ -52,10 +52,6 @@ accessibility-extension/
 │   │   │   │   ├── RecommendationCard.tsx # Recommendation display
 │   │   │   │   └── index.ts        # Component exports
 │   │   │   │
-│   │   │   ├── 📁 FilterBar/       # Filter controls
-│   │   │   │   ├── FilterBar.tsx   # Search and filter UI
-│   │   │   │   └── index.ts        # Component export
-│   │   │   │
 │   │   │   ├── 📁 EmptyState/      # No results state
 │   │   │   │   ├── EmptyState.tsx  # Empty/error display
 │   │   │   │   └── index.ts        # Component export
@@ -260,7 +256,7 @@ Main app component:
 
 - Sets up ScanProvider context
 - Listens for scan results
-- Layout: Header + FilterBar + (IssueList | IssueDetail)
+- Layout: Header + (IssueList | IssueDetail)
 
 #### `src/app/context/ScanContext.tsx`
 
@@ -292,13 +288,6 @@ Issue detail component directory:
 - **IssueDetail.tsx** - Main detail view showing full issue description, WCAG metadata (level, criteria, impact, confidence), element info (selector, HTML snippet), context (role, accessible name, focusable, contrast), recommendations in tabs (Developer, QA, Designer), status buttons (Fixed, Ignored, Needs Design), notes textarea, and "Learn More" link
 - **RecommendationCard.tsx** - Reusable card component for displaying role-specific recommendations
 - **index.ts** - Component exports
-
-#### `src/app/components/FilterBar/`
-
-Filter controls component directory:
-
-- **FilterBar.tsx** - Search input and filter dropdowns (severity, WCAG level, status)
-- **index.ts** - Component export
 
 #### `src/app/components/EmptyState/`
 
