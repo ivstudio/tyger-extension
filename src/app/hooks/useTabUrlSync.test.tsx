@@ -3,20 +3,20 @@ import {
     mockChrome,
     resetChromeMocks,
     getLastMockPort,
+    triggerRuntimeMessage,
 } from '@/test/mocks/chrome';
 import { MessageType } from '@/types/messages';
 
-// Mock webextension-polyfill
+const mockDispatch = vi.fn();
+
 vi.mock('webextension-polyfill', () => ({
     default: mockChrome,
 }));
 
-// Mock the context to avoid provider complexity
 vi.mock('@/app/context/useScanContext', () => ({
-    useScanDispatch: () => vi.fn(),
+    useScanDispatch: () => mockDispatch,
 }));
 
-// Import after mocks
 import { useTabUrlSync } from './useTabUrlSync';
 import { renderHook } from '@testing-library/react';
 
@@ -24,6 +24,7 @@ describe('useTabUrlSync', () => {
     beforeEach(() => {
         resetChromeMocks();
         vi.clearAllMocks();
+        mockDispatch.mockClear();
     });
 
     describe('initialization', () => {
@@ -94,6 +95,59 @@ describe('useTabUrlSync', () => {
                     data: { url: 'https://test.com' },
                 });
             }).not.toThrow();
+        });
+
+        it('should dispatch SET_CURRENT_URL when port receives URL', () => {
+            renderHook(() => useTabUrlSync());
+
+            const port = getLastMockPort();
+            (port.onMessage as any)._trigger({
+                type: MessageType.CURRENT_URL_UPDATE,
+                data: { url: 'https://first.com' },
+            });
+
+            expect(mockDispatch).toHaveBeenCalledWith({
+                type: 'SET_CURRENT_URL',
+                payload: 'https://first.com',
+            });
+        });
+
+        it('should dispatch RESET when URL changes (port receives different URL)', () => {
+            renderHook(() => useTabUrlSync());
+
+            const port = getLastMockPort();
+            (port.onMessage as any)._trigger({
+                type: MessageType.CURRENT_URL_UPDATE,
+                data: { url: 'https://first.com' },
+            });
+            mockDispatch.mockClear();
+
+            (port.onMessage as any)._trigger({
+                type: MessageType.CURRENT_URL_UPDATE,
+                data: { url: 'https://second.com' },
+            });
+
+            expect(mockDispatch).toHaveBeenCalledWith({ type: 'RESET' });
+            expect(mockDispatch).toHaveBeenCalledWith({
+                type: 'SET_CURRENT_URL',
+                payload: 'https://second.com',
+            });
+        });
+    });
+
+    describe('runtime onMessage handling', () => {
+        it('should apply URL when CURRENT_URL_UPDATE received via runtime.onMessage', () => {
+            renderHook(() => useTabUrlSync());
+
+            triggerRuntimeMessage({
+                type: MessageType.CURRENT_URL_UPDATE,
+                data: { url: 'https://runtime-url.com' },
+            });
+
+            expect(mockDispatch).toHaveBeenCalledWith({
+                type: 'SET_CURRENT_URL',
+                payload: 'https://runtime-url.com',
+            });
         });
     });
 

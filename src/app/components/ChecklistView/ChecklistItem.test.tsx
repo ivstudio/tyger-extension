@@ -133,3 +133,126 @@ describe('ChecklistItem - Click to Highlight', () => {
         expect(onClickMock).toHaveBeenCalledTimes(1);
     });
 });
+
+describe('ChecklistItem - Status buttons', () => {
+    const mockItem: ChecklistItemType = {
+        id: 'item-1',
+        title: 'Test item',
+        description: 'Test description',
+        status: 'pending',
+    };
+
+    it('should call onStatusChange with pass when Pass button clicked', () => {
+        const onStatusChangeMock = vi.fn();
+        render(
+            <ChecklistItem
+                item={mockItem}
+                onStatusChange={onStatusChangeMock}
+            />
+        );
+        fireEvent.click(screen.getByTitle('Pass'));
+        expect(onStatusChangeMock).toHaveBeenCalledWith('item-1', 'pass', '');
+    });
+
+    it('should call onStatusChange with fail when Fail button clicked', () => {
+        const onStatusChangeMock = vi.fn();
+        render(
+            <ChecklistItem
+                item={mockItem}
+                onStatusChange={onStatusChangeMock}
+            />
+        );
+        fireEvent.click(screen.getByTitle('Fail'));
+        expect(onStatusChangeMock).toHaveBeenCalledWith('item-1', 'fail', '');
+    });
+
+    it('should call onStatusChange with skip when Skip button clicked', () => {
+        const onStatusChangeMock = vi.fn();
+        render(
+            <ChecklistItem
+                item={mockItem}
+                onStatusChange={onStatusChangeMock}
+            />
+        );
+        fireEvent.click(screen.getByTitle('Skip'));
+        expect(onStatusChangeMock).toHaveBeenCalledWith('item-1', 'skip', '');
+    });
+
+    it('should show notes section and Add notes when status is not pending', () => {
+        const itemWithStatus: ChecklistItemType = {
+            ...mockItem,
+            id: 'item-2',
+            status: 'pass',
+        };
+        render(
+            <ChecklistItem item={itemWithStatus} onStatusChange={vi.fn()} />
+        );
+        expect(screen.getByText('Add notes')).toBeInTheDocument();
+    });
+
+    it('should toggle to Hide notes when Add notes is clicked', () => {
+        const itemWithStatus: ChecklistItemType = {
+            ...mockItem,
+            id: 'item-3',
+            status: 'fail',
+        };
+        render(
+            <ChecklistItem item={itemWithStatus} onStatusChange={vi.fn()} />
+        );
+        fireEvent.click(screen.getByText('Add notes'));
+        expect(screen.getByText('Hide notes')).toBeInTheDocument();
+    });
+
+    it('should call onStatusChange with notes when textarea is changed', () => {
+        const itemWithStatus: ChecklistItemType = {
+            ...mockItem,
+            id: 'item-4',
+            status: 'pass',
+        };
+        const onStatusChangeMock = vi.fn();
+        render(
+            <ChecklistItem
+                item={itemWithStatus}
+                onStatusChange={onStatusChangeMock}
+            />
+        );
+        fireEvent.click(screen.getByText('Add notes'));
+        const textarea = screen.getByPlaceholderText(
+            'Add notes about this check...'
+        );
+        fireEvent.change(textarea, { target: { value: 'My note' } });
+        expect(onStatusChangeMock).toHaveBeenCalledWith(
+            'item-4',
+            'pass',
+            'My note'
+        );
+    });
+
+    it('should display existing note when notes exist and showNotes is false', () => {
+        const itemWithNotes: ChecklistItemType = {
+            ...mockItem,
+            id: 'item-5',
+            status: 'pass',
+            notes: 'Existing verification note',
+        };
+        render(<ChecklistItem item={itemWithNotes} onStatusChange={vi.fn()} />);
+        expect(
+            screen.getByText('Note: Existing verification note')
+        ).toBeInTheDocument();
+    });
+
+    it('should initialize notes from item.notes', () => {
+        const itemWithNotes: ChecklistItemType = {
+            ...mockItem,
+            id: 'item-6',
+            status: 'skip',
+            notes: 'Pre-filled note',
+        };
+        render(<ChecklistItem item={itemWithNotes} onStatusChange={vi.fn()} />);
+        fireEvent.click(screen.getByText('Add notes'));
+        const textarea = screen.getByPlaceholderText(
+            'Add notes about this check...'
+        );
+        expect(textarea).toHaveValue('Pre-filled note');
+    });
+});

@@ -471,4 +471,40 @@ describe('storage', () => {
             expect(updatedIssue?.status).toBe('ignored');
         });
     });
+
+    describe('checkStorageUsage (via saveScanResult)', () => {
+        it('should not throw when getBytesInUse is not supported', async () => {
+            const scan = createMockScanResult({ url: 'https://example.com' });
+            const originalGetBytesInUse =
+                mockChrome.storage.local.getBytesInUse;
+            (mockChrome.storage.local as any).getBytesInUse = undefined;
+
+            await expect(storage.saveScanResult(scan)).resolves.not.toThrow();
+
+            (mockChrome.storage.local as any).getBytesInUse =
+                originalGetBytesInUse;
+        });
+
+        it('should warn when storage usage exceeds 80%', async () => {
+            const scan = createMockScanResult({ url: 'https://example.com' });
+            const warnSpy = vi
+                .spyOn(console, 'warn')
+                .mockImplementation(() => {});
+            const originalGetBytesInUse =
+                mockChrome.storage.local.getBytesInUse;
+            (mockChrome.storage.local as any).getBytesInUse = vi.fn(() =>
+                Promise.resolve(9 * 1024 * 1024)
+            );
+
+            await storage.saveScanResult(scan);
+
+            expect(warnSpy).toHaveBeenCalledWith(
+                expect.stringContaining('Storage usage is at')
+            );
+
+            warnSpy.mockRestore();
+            (mockChrome.storage.local as any).getBytesInUse =
+                originalGetBytesInUse;
+        });
+    });
 });
