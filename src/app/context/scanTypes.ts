@@ -37,6 +37,7 @@ export type ScanAction =
     | { type: 'UPDATE_FILTERS'; payload: Partial<Filters> }
     | { type: 'CLEAR_FILTERS' }
     | { type: 'RESET' }
+    | { type: 'RESET_AND_START_SCAN'; payload: string }
     | {
           type: 'UPDATE_ISSUE_STATUS';
           payload: { issueId: string; status: IssueStatus; notes?: string };

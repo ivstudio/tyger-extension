@@ -93,6 +93,43 @@ export function useScanWithAnimation() {
         }
     }, [dispatch]);
 
+    const handleRefresh = useCallback(async () => {
+        try {
+            const tabs = await chrome.tabs.query({
+                active: true,
+                currentWindow: true,
+            });
+            const activeTab = tabs[0];
+            if (!activeTab?.url) throw new Error('No active tab found');
+
+            const runId = Date.now().toString();
+            runIdRef.current = runId;
+            processedRunIdRef.current = null;
+            animationDoneRef.current = false;
+            bufferedResultRef.current = null;
+            setIsAnimating(true);
+
+            dispatch({
+                type: 'RESET_AND_START_SCAN',
+                payload: activeTab.url,
+            });
+
+            await sendMessage({
+                type: MessageType.SCAN_REQUEST,
+                data: { url: activeTab.url, runId },
+            });
+        } catch (error) {
+            setIsAnimating(false);
+            dispatch({
+                type: 'SCAN_ERROR',
+                payload:
+                    error instanceof Error
+                        ? error.message
+                        : 'Failed to start scan',
+            });
+        }
+    }, [dispatch]);
+
     const handleAnimationComplete = useCallback(() => {
         animationDoneRef.current = true;
         if (bufferedResultRef.current) {
@@ -140,5 +177,10 @@ export function useScanWithAnimation() {
         return () => port.disconnect();
     }, [apply]);
 
-    return { handleScan, handleAnimationComplete, isAnimating };
+    return {
+        handleScan,
+        handleRefresh,
+        handleAnimationComplete,
+        isAnimating,
+    };
 }

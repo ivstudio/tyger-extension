@@ -1,11 +1,8 @@
 import { useState } from 'react';
-import { Play, Download, Settings, Target, EyeOff } from 'lucide-react';
+import { RefreshCw, Download, Settings, Target, EyeOff } from 'lucide-react';
 import { Button } from '../ui/Button';
-import {
-    useScanState,
-    useScanDispatch,
-    useChecklist,
-} from '@/app/context/useScanContext';
+import { useScanState, useChecklist } from '@/app/context/useScanContext';
+import { useScanActions } from '@/app/context/ScanActionsContext';
 import { sendMessage } from '@/services/messaging';
 import { MessageType } from '@/types/messages';
 import { downloadJSON } from '@/services/export';
@@ -13,7 +10,7 @@ import { downloadJSON } from '@/services/export';
 export function HeaderActions() {
     const { currentScan, isScanning } = useScanState();
     const checklist = useChecklist();
-    const dispatch = useScanDispatch();
+    const { handleRefresh } = useScanActions();
     const [pickerActive, setPickerActive] = useState(false);
 
     const handleExport = () => {
@@ -37,48 +34,16 @@ export function HeaderActions() {
         }).catch(err => console.error('Failed to clear highlights:', err));
     };
 
-    const handleScan = async () => {
-        try {
-            const tabs = await chrome.tabs.query({
-                active: true,
-                currentWindow: true,
-            });
-            const activeTab = tabs[0];
-
-            if (!activeTab?.url) {
-                throw new Error('No active tab found');
-            }
-
-            dispatch({ type: 'SCAN_START', payload: activeTab.url });
-
-            await sendMessage({
-                type: MessageType.SCAN_REQUEST,
-                data: {
-                    url: activeTab.url,
-                    runId: Date.now().toString(),
-                },
-            });
-        } catch (error) {
-            dispatch({
-                type: 'SCAN_ERROR',
-                payload:
-                    error instanceof Error
-                        ? error.message
-                        : 'Failed to start scan',
-            });
-        }
-    };
-
     return (
         <div className="flex items-center gap-2">
             <Button
-                onClick={handleScan}
+                onClick={handleRefresh}
                 disabled={isScanning}
                 size="sm"
                 className="gap-2"
             >
-                <Play className="h-4 w-4" />
-                {isScanning ? 'Scanning...' : 'Run Scan'}
+                <RefreshCw className="h-4 w-4" />
+                {isScanning ? 'Scanning...' : 'Refresh'}
             </Button>
 
             {currentScan && (

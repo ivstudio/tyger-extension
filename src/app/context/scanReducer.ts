@@ -51,6 +51,19 @@ export function scanReducer(state: ScanState, action: ScanAction): ScanState {
         case 'RESET':
             return initialState;
 
+        case 'RESET_AND_START_SCAN':
+            return {
+                ...state,
+                currentScan: null,
+                previousScan: null,
+                selectedIssue: null,
+                error: null,
+                filters: initialState.filters,
+                isScanning: true,
+                hasScannedOnce: true,
+                currentUrl: action.payload,
+            };
+
         case 'UPDATE_ISSUE_STATUS': {
             if (!state.currentScan) return state;
 

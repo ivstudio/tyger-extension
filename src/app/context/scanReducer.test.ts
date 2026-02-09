@@ -227,6 +227,71 @@ describe('scanReducer', () => {
         });
     });
 
+    describe('RESET_AND_START_SCAN', () => {
+        const url = 'https://example.com/refresh';
+
+        it('should clear scan-related state and set scanning', () => {
+            const stateWithScan: ScanState = {
+                ...initialState,
+                currentScan: createMockScanResult(),
+                previousScan: createMockScanResult(),
+                selectedIssue: createMockIssue(),
+                filters: {
+                    severity: ['critical'],
+                    wcag: ['AA'],
+                    status: ['open'],
+                    search: 'test',
+                },
+                error: 'Some error',
+                hasScannedOnce: true,
+                currentUrl: 'https://old.com',
+            };
+
+            const nextState = scanReducer(stateWithScan, {
+                type: 'RESET_AND_START_SCAN',
+                payload: url,
+            });
+
+            expect(nextState.currentScan).toBeNull();
+            expect(nextState.previousScan).toBeNull();
+            expect(nextState.selectedIssue).toBeNull();
+            expect(nextState.error).toBeNull();
+            expect(nextState.filters).toEqual(initialState.filters);
+            expect(nextState.isScanning).toBe(true);
+            expect(nextState.hasScannedOnce).toBe(true);
+            expect(nextState.currentUrl).toBe(url);
+        });
+
+        it('should not set hasScannedOnce to false', () => {
+            const nextState = scanReducer(initialState, {
+                type: 'RESET_AND_START_SCAN',
+                payload: url,
+            });
+
+            expect(nextState.hasScannedOnce).toBe(true);
+        });
+
+        it('should preserve currentChecklist and viewMode', () => {
+            const stateWithChecklist: ScanState = {
+                ...initialState,
+                currentScan: createMockScanResult(),
+                currentChecklist: createMockManualChecklist(),
+                viewMode: 'checklist',
+                hasScannedOnce: true,
+            };
+
+            const nextState = scanReducer(stateWithChecklist, {
+                type: 'RESET_AND_START_SCAN',
+                payload: url,
+            });
+
+            expect(nextState.currentChecklist).toEqual(
+                stateWithChecklist.currentChecklist
+            );
+            expect(nextState.viewMode).toBe('checklist');
+        });
+    });
+
     describe('UPDATE_ISSUE_STATUS', () => {
         it('should update issue status in current scan', () => {
             const issue1 = createMockIssue({ id: 'issue-1', status: 'open' });
