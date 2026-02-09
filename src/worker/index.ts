@@ -14,9 +14,11 @@ function sendCurrentUrlToApp(url: string): void {
         type: MessageType.CURRENT_URL_UPDATE,
         data: { url },
     };
-    sendMessage(msg).catch(err =>
-        console.error('Failed to send current URL to app:', err)
-    );
+    if (appPorts.size > 0) {
+        sendMessage(msg).catch(err =>
+            console.error('Failed to send current URL to app:', err)
+        );
+    }
     appPorts.forEach(p => {
         try {
             p.postMessage(msg);

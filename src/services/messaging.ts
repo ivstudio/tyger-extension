@@ -1,16 +1,30 @@
 import browser from 'webextension-polyfill';
 import { Message, MessageSchema } from '@/types/messages';
 
+function isConnectionError(error: unknown): boolean {
+    const msg = error instanceof Error ? error.message : String(error);
+    return (
+        msg.includes('Receiving end does not exist') ||
+        msg.includes('Could not establish connection')
+    );
+}
+
 /**
  * Type-safe message sending with runtime validation
  */
 export async function sendMessage<T extends Message>(message: T): Promise<any> {
     try {
-        // Validate message before sending
         MessageSchema.parse(message);
-        return await browser.runtime.sendMessage(message);
     } catch (error) {
         console.error('Invalid message format:', error);
+        throw error;
+    }
+    try {
+        return await browser.runtime.sendMessage(message);
+    } catch (error) {
+        if (!isConnectionError(error)) {
+            console.error('Send message failed:', error);
+        }
         throw error;
     }
 }
@@ -24,9 +38,16 @@ export async function sendMessageToTab<T extends Message>(
 ): Promise<any> {
     try {
         MessageSchema.parse(message);
-        return await browser.tabs.sendMessage(tabId, message);
     } catch (error) {
         console.error('Invalid message format:', error);
+        throw error;
+    }
+    try {
+        return await browser.tabs.sendMessage(tabId, message);
+    } catch (error) {
+        if (!isConnectionError(error)) {
+            console.error('Send message to tab failed:', error);
+        }
         throw error;
     }
 }

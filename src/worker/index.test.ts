@@ -28,6 +28,9 @@ describe('worker URL sync', () => {
         it('should broadcast URL when tab is activated', async () => {
             await import('./index');
 
+            mockChrome.runtime.connect({ name: 'app' });
+            mockChrome.runtime.sendMessage.mockClear();
+
             mockChrome.tabs.query.mockResolvedValueOnce([
                 {
                     id: 2,
@@ -82,6 +85,9 @@ describe('worker URL sync', () => {
         it('should send URL when active tab URL changes', async () => {
             await import('./index');
 
+            mockChrome.runtime.connect({ name: 'app' });
+            mockChrome.runtime.sendMessage.mockClear();
+
             mockChrome.tabs.query.mockResolvedValueOnce([
                 {
                     id: 1,
@@ -114,6 +120,9 @@ describe('worker URL sync', () => {
 
         it('should send URL when active tab load completes', async () => {
             await import('./index');
+
+            mockChrome.runtime.connect({ name: 'app' });
+            mockChrome.runtime.sendMessage.mockClear();
 
             mockChrome.tabs.query.mockResolvedValueOnce([
                 {
@@ -204,6 +213,9 @@ describe('worker URL sync', () => {
         it('should use changeInfo.url when available', async () => {
             await import('./index');
 
+            mockChrome.runtime.connect({ name: 'app' });
+            mockChrome.runtime.sendMessage.mockClear();
+
             mockChrome.tabs.query.mockResolvedValueOnce([
                 {
                     id: 1,
@@ -236,6 +248,9 @@ describe('worker URL sync', () => {
 
         it('should fall back to tab.url when changeInfo.url not available', async () => {
             await import('./index');
+
+            mockChrome.runtime.connect({ name: 'app' });
+            mockChrome.runtime.sendMessage.mockClear();
 
             mockChrome.tabs.query.mockResolvedValueOnce([
                 {
@@ -271,6 +286,9 @@ describe('worker URL sync', () => {
     describe('webNavigation.onCommitted listener', () => {
         it('should send URL for active tab SPA navigation', async () => {
             await import('./index');
+
+            mockChrome.runtime.connect({ name: 'app' });
+            mockChrome.runtime.sendMessage.mockClear();
 
             mockChrome.tabs.query.mockResolvedValueOnce([
                 {
